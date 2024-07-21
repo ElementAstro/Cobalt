@@ -16,13 +16,26 @@
         </tr>
       </thead>
     </table>
-    <div :style="{ 'max-height': containerMaxHeight + 'px' }" class="scrollable-container" @scroll="handleScrollB" ref="listB">
+    <div
+      :style="{ 'max-height': containerMaxHeight + 'px' }"
+      class="scrollable-container"
+      @scroll="handleScrollB"
+      ref="listB"
+    >
       <table>
         <tbody class="scrollable-body">
-          <tr v-for="row in numberOfRows" :key="row" :class="{ selected: isSelectedRow(row) }">
-            <td v-for="column in numberOfColumns" :key="column" :class="{ 'selected-cell': isSelected(row, column) }"
-              @click="selectCell(row, column)">
-              {{ cellValues[`${row}-${column}`] || '' }}
+          <tr
+            v-for="row in numberOfRows"
+            :key="row"
+            :class="{ selected: isSelectedRow(row) }"
+          >
+            <td
+              v-for="column in numberOfColumns"
+              :key="column"
+              :class="{ 'selected-cell': isSelected(row, column) }"
+              @click="selectCell(row, column)"
+            >
+              {{ cellValues[`${row}-${column}`] || "" }}
             </td>
           </tr>
         </tbody>
@@ -30,7 +43,7 @@
     </div>
   </div>
 </template>
-  
+
 <script>
 export default {
   data() {
@@ -39,100 +52,83 @@ export default {
       selectedRow_: null,
       selectedRow: null,
       selectedColumn: null,
-      selectedCellValue: '', // 新增选中单元格内容的变量
+      selectedCellValue: "", // 新增选中单元格内容的变量
       numberOfRows: 8,
       numberOfColumns: 8,
       cellValues: {},
       tableData: [],
-      
+
       initialColumnValues: {
-        1: 'null ',
-        2: '',
-        3: 'Now',
-        4: '1 s',
-        5: 'L',
-        6: '1',
-        7: 'Light',
-        8: 'OFF',
+        1: "null ",
+        2: "",
+        3: "Now",
+        4: "1 s",
+        5: "L",
+        6: "1",
+        7: "Light",
+        8: "OFF",
       },
     };
   },
   created() {
-    this.$bus.$on('toggleSchedulePanel', this.setMaxHeight);
+    this.$bus.$on("toggleSchedulePanel", this.setMaxHeight);
 
     // 监听来自事件总线的滚动事件
-    this.$bus.$on('scrollEventA', (scrollTop) => {
+    this.$bus.$on("scrollEventA", (scrollTop) => {
       // 使用 scrollTo 方法控制组件的滚动
       this.$refs.listB.scrollTo(0, scrollTop);
     });
 
-    this.$bus.$on('AddScheduleRow',this.AddScheduleRow);
+    this.$bus.$on("AddScheduleRow", this.AddScheduleRow);
 
-    this.$bus.$on('SelectedScheduleRow', this.SelectedScheduleRow);
+    this.$bus.$on("SelectedScheduleRow", this.SelectedScheduleRow);
 
-    this.$bus.$on('NoSelectedScheduleRow', this.NoSelectedScheduleRow);
+    this.$bus.$on("NoSelectedScheduleRow", this.NoSelectedScheduleRow);
 
-    this.$bus.$on('MoveScheduleRow',this.MoveScheduleRow);
+    this.$bus.$on("MoveScheduleRow", this.MoveScheduleRow);
 
-    this.$bus.$on('DeleteSelectedScheduleRow',this.DeleteSelectedScheduleRow);
+    this.$bus.$on("DeleteSelectedScheduleRow", this.DeleteSelectedScheduleRow);
 
-    this.$bus.$on('EditContent',this.EditContent);
+    this.$bus.$on("EditContent", this.EditContent);
 
-    this.$bus.$on('insertObjName',this.insertObjName);
+    this.$bus.$on("insertObjName", this.insertObjName);
 
-    this.$bus.$on('getTableData',this.getTableData);
+    this.$bus.$on("getTableData", this.getTableData);
 
-    this.$bus.$on('TargetRaDec',this.insertObjRaDec);
+    this.$bus.$on("TargetRaDec", this.insertObjRaDec);
 
-    this.$bus.$on('StagingScheduleData',this.RecoveryScheduleData);
-
+    this.$bus.$on("StagingScheduleData", this.RecoveryScheduleData);
   },
   mounted() {
-    console.log('initialize ScheduleTable------------------------------');
+    console.log("initialize ScheduleTable------------------------------");
     // this.sendMessage('Vue_Command', 'getStagingScheduleData');
     // 初始化表格数据
     this.initializeTable();
-    this.$bus.$emit('AppSendMessage', 'Vue_Command', 'getStagingScheduleData');
+    this.$bus.$emit("AppSendMessage", "Vue_Command", "getStagingScheduleData");
   },
   methods: {
     selectCell(row, column) {
       this.selectedRow = row;
       this.selectedColumn = column;
 
-      this.selectedCellValue = this.cellValues[`${row}-${column}`] || ''; // 获取选中单元格的内容
+      this.selectedCellValue = this.cellValues[`${row}-${column}`] || ""; // 获取选中单元格的内容
       console.log(`selectCell: `, this.selectedCellValue);
 
-      if(column === 1)
-      {
-        this.$bus.$emit('KeyBoardMode','Target');
-      }
-      else if(column === 2)
-      {
-
-      }
-      else if(column === 3)
-      {
-        this.$bus.$emit('KeyBoardMode','Time');
-      }
-      else if(column === 4)
-      {
-        this.$bus.$emit('KeyBoardMode','ExpTime');
-      }
-      else if(column === 5)
-      {
-        this.$bus.$emit('KeyBoardMode','CFW');
-      }
-      else if(column === 6)
-      {
-        this.$bus.$emit('KeyBoardMode','Repeat');
-      }
-      else if(column === 7)
-      {
-        this.$bus.$emit('KeyBoardMode','Type');
-      }
-      else if(column === 8)
-      {
-        this.$bus.$emit('KeyBoardMode','Focus');
+      if (column === 1) {
+        this.$bus.$emit("KeyBoardMode", "Target");
+      } else if (column === 2) {
+      } else if (column === 3) {
+        this.$bus.$emit("KeyBoardMode", "Time");
+      } else if (column === 4) {
+        this.$bus.$emit("KeyBoardMode", "ExpTime");
+      } else if (column === 5) {
+        this.$bus.$emit("KeyBoardMode", "CFW");
+      } else if (column === 6) {
+        this.$bus.$emit("KeyBoardMode", "Repeat");
+      } else if (column === 7) {
+        this.$bus.$emit("KeyBoardMode", "Type");
+      } else if (column === 8) {
+        this.$bus.$emit("KeyBoardMode", "Focus");
       }
 
       this.getTableData(false);
@@ -156,7 +152,12 @@ export default {
 
     MoveScheduleRow(index) {
       // 检查选中的行是否有效
-      if (this.selectedRow_ === null || index < 1 || index > this.numberOfRows || index === this.selectedRow_) {
+      if (
+        this.selectedRow_ === null ||
+        index < 1 ||
+        index > this.numberOfRows ||
+        index === this.selectedRow_
+      ) {
         return;
       }
 
@@ -164,7 +165,7 @@ export default {
       const selectedRowData = {};
       for (let column = 1; column <= this.numberOfColumns; column++) {
         const key = `${this.selectedRow_}-${column}`;
-        selectedRowData[key] = this.cellValues[key] || '';
+        selectedRowData[key] = this.cellValues[key] || "";
       }
 
       // 删除选中的行
@@ -174,7 +175,7 @@ export default {
           for (let column = 1; column <= this.numberOfColumns; column++) {
             const currentKey = `${row}-${column}`;
             const nextKey = `${row + 1}-${column}`;
-            this.cellValues[currentKey] = this.cellValues[nextKey] || '';
+            this.cellValues[currentKey] = this.cellValues[nextKey] || "";
           }
         }
       } else {
@@ -183,7 +184,7 @@ export default {
           for (let column = 1; column <= this.numberOfColumns; column++) {
             const currentKey = `${row}-${column}`;
             const prevKey = `${row - 1}-${column}`;
-            this.cellValues[currentKey] = this.cellValues[prevKey] || '';
+            this.cellValues[currentKey] = this.cellValues[prevKey] || "";
           }
         }
       }
@@ -191,7 +192,11 @@ export default {
       // 在目标位置插入选中的行数据
       for (let column = 1; column <= this.numberOfColumns; column++) {
         const key = `${index}-${column}`;
-        this.$set(this.cellValues, key, selectedRowData[`${this.selectedRow_}-${column}`]);
+        this.$set(
+          this.cellValues,
+          key,
+          selectedRowData[`${this.selectedRow_}-${column}`]
+        );
       }
 
       // 更新选中的行索引
@@ -208,7 +213,7 @@ export default {
           for (let column = 1; column <= this.numberOfColumns; column++) {
             const currentKey = `${row}-${column}`;
             const nextKey = `${row + 1}-${column}`;
-            this.cellValues[currentKey] = this.cellValues[nextKey] || '';
+            this.cellValues[currentKey] = this.cellValues[nextKey] || "";
           }
         }
 
@@ -237,18 +242,18 @@ export default {
         // 检查第一列的单元格内容是否为 'null '
         const firstColumnKey = `${row}-1`;
         const firstColumnValue = this.cellValues[firstColumnKey];
-        
+
         // const RepeatNumKey = `${row}-6`;
         // const RepeatNum = this.cellValues[RepeatNumKey];
 
         // 如果第一列的内容不是 'null '，则获取该行数据
-        if (firstColumnValue !== 'null ') {
-          let rowData = ['[']; // 在每一行的开头添加 [
+        if (firstColumnValue !== "null ") {
+          let rowData = ["["]; // 在每一行的开头添加 [
           // 遍历每一列
           for (let column = 1; column <= this.numberOfColumns; column++) {
             const key = `${row}-${column}`;
             // 将单元格数据添加到当前行的数组中
-            rowData.push(this.cellValues[key] || '');
+            rowData.push(this.cellValues[key] || "");
           }
           // rowData.push(']'); // 在每一行的结尾添加 ]
           // 将当前行的数组添加到表格数据中
@@ -256,28 +261,35 @@ export default {
         }
       }
       // 输出表格数据
-      console.log('Table Data:', this.tableData);
-      if(isStart) {
-        this.$bus.$emit('AppSendMessage', 'Vue_Command', 'ScheduleTabelData:'+ this.tableData);
+      console.log("Table Data:", this.tableData);
+      if (isStart) {
+        this.$bus.$emit(
+          "AppSendMessage",
+          "Vue_Command",
+          "ScheduleTabelData:" + this.tableData
+        );
       } else {
-        this.$bus.$emit('AppSendMessage', 'Vue_Command', 'StagingScheduleData:'+ this.tableData);
+        this.$bus.$emit(
+          "AppSendMessage",
+          "Vue_Command",
+          "StagingScheduleData:" + this.tableData
+        );
       }
-      
     },
 
     RecoveryScheduleData(text) {
-      console.log('RecoveryScheduleData: ', text);
-      const rowData = text.split('[');
+      console.log("RecoveryScheduleData: ", text);
+      const rowData = text.split("[");
 
       // 循环遍历分割后的数组
       for (let i = 1; i < rowData.length; i++) {
-        console.log('rowData: ', rowData[i]);
+        console.log("rowData: ", rowData[i]);
 
-        const colData = rowData[i].split(',');
-        for (let j = 1; j < colData.length; j++){
-          console.log('colData: ', colData[j]);
+        const colData = rowData[i].split(",");
+        for (let j = 1; j < colData.length; j++) {
+          console.log("colData: ", colData[j]);
           let key;
-          if(j === 1) {
+          if (j === 1) {
             key = `${i}-${1}`;
             this.cellValues[key] = colData[j];
           } else if (j === 2) {
@@ -285,8 +297,8 @@ export default {
             this.cellValues[key] = colData[j];
           } else if (j === 3) {
             key = `${i}-${2}`;
-            const currentValue = this.cellValues[key] || '';
-            this.cellValues[key] = currentValue + ',' + colData[j];
+            const currentValue = this.cellValues[key] || "";
+            this.cellValues[key] = currentValue + "," + colData[j];
           } else if (j === 4) {
             key = `${i}-${3}`;
             this.cellValues[key] = colData[j];
@@ -313,61 +325,72 @@ export default {
     EditContent(text) {
       if (this.selectedRow !== null && this.selectedColumn !== null) {
         const key = `${this.selectedRow}-${this.selectedColumn}`;
-        if (this.selectedColumn === 5 || this.selectedColumn === 7 || this.selectedColumn === 8) {
+        if (
+          this.selectedColumn === 5 ||
+          this.selectedColumn === 7 ||
+          this.selectedColumn === 8
+        ) {
           // 如果 selectedColumn 为 5、7 或 8，则直接赋值给单元格内容
           this.cellValues[key] = text;
         } else if (this.selectedColumn === 1) {
-          const currentValue = this.cellValues[key] || '';
+          const currentValue = this.cellValues[key] || "";
           // console.log('currentValue', currentValue);
           if (!isNaN(text)) {
             // 如果 text 是数字，则将数字插入到现有文本的后面
             this.cellValues[key] = currentValue + text;
-          } else if (text === 'Prefix' && currentValue.includes('null')) {
-            this.cellValues[key] = currentValue.replace('null', 'M');
-          } else if (text === 'Prefix' && currentValue === ' ') {
-            this.cellValues[key] = currentValue.replace(' ', 'M ');
-          } else if (text === 'Prefix' && currentValue.includes('M')) {
-            this.cellValues[key] = currentValue.replace('M', 'IC');
-          } else if (text === 'Prefix' && currentValue.includes('IC')) {
-            this.cellValues[key] = currentValue.replace('IC', 'NGC');
-          } else if (text === 'Prefix' && currentValue.includes('NGC')) {
-            this.cellValues[key] = currentValue.replace('NGC', 'M');
-          } else if (text === 'Delete') {
+          } else if (text === "Prefix" && currentValue.includes("null")) {
+            this.cellValues[key] = currentValue.replace("null", "M");
+          } else if (text === "Prefix" && currentValue === " ") {
+            this.cellValues[key] = currentValue.replace(" ", "M ");
+          } else if (text === "Prefix" && currentValue.includes("M")) {
+            this.cellValues[key] = currentValue.replace("M", "IC");
+          } else if (text === "Prefix" && currentValue.includes("IC")) {
+            this.cellValues[key] = currentValue.replace("IC", "NGC");
+          } else if (text === "Prefix" && currentValue.includes("NGC")) {
+            this.cellValues[key] = currentValue.replace("NGC", "M");
+          } else if (text === "Delete") {
             // 如果 text 是 "Delete"，则删除现有文本中数字部分的最后一位，但不能删除空格以及空格前的字母部分
-            const spaceIndex = currentValue.indexOf(' ');
+            const spaceIndex = currentValue.indexOf(" ");
             if (spaceIndex !== -1) {
               const numberPart = currentValue.slice(spaceIndex + 1);
               if (numberPart.length > 0) {
-                this.cellValues[key] = currentValue.slice(0, spaceIndex + 1) + numberPart.slice(0, -1);
+                this.cellValues[key] =
+                  currentValue.slice(0, spaceIndex + 1) +
+                  numberPart.slice(0, -1);
               }
             }
           }
-          console.log('currentValue', this.cellValues[key]);
-          this.$bus.$emit('SearchName',this.cellValues[key]);
+          console.log("currentValue", this.cellValues[key]);
+          this.$bus.$emit("SearchName", this.cellValues[key]);
         } else if (this.selectedColumn === 2) {
-          
         } else if (this.selectedColumn === 3) {
-          const currentValue = this.cellValues[key] || '';
+          const currentValue = this.cellValues[key] || "";
           const textIsNumber = !isNaN(text);
 
           if (textIsNumber) {
             const currentLength = currentValue.length;
-            if (currentValue === 'Now') {
+            if (currentValue === "Now") {
               if (text < 3) {
-                const updatedValue = text + ':';
+                const updatedValue = text + ":";
                 this.cellValues[key] = updatedValue;
               }
             } else if (currentLength === 2) {
               const firstChar = currentValue.charAt(0);
               if (firstChar > 1) {
                 if (text < 4) {
-                  const insertIndex = currentValue.indexOf(':');
-                  const updatedValue = currentValue.slice(0, insertIndex) + text + currentValue.slice(insertIndex);
+                  const insertIndex = currentValue.indexOf(":");
+                  const updatedValue =
+                    currentValue.slice(0, insertIndex) +
+                    text +
+                    currentValue.slice(insertIndex);
                   this.cellValues[key] = updatedValue;
                 }
               } else {
-                const insertIndex = currentValue.indexOf(':');
-                const updatedValue = currentValue.slice(0, insertIndex) + text + currentValue.slice(insertIndex);
+                const insertIndex = currentValue.indexOf(":");
+                const updatedValue =
+                  currentValue.slice(0, insertIndex) +
+                  text +
+                  currentValue.slice(insertIndex);
                 this.cellValues[key] = updatedValue;
               }
             } else if (currentLength === 3) {
@@ -379,53 +402,59 @@ export default {
               const updatedValue = currentValue + text;
               this.cellValues[key] = updatedValue;
             }
-          } else if (text === 'Delete') {
+          } else if (text === "Delete") {
             const currentLength = currentValue.length;
             if (currentLength === 4 || currentLength === 5) {
               const updatedValue = currentValue.slice(0, -1);
               this.cellValues[key] = updatedValue;
             } else if (currentLength === 3) {
-              const indexToDelete = currentValue.indexOf(':') - 1;
+              const indexToDelete = currentValue.indexOf(":") - 1;
               if (indexToDelete >= 0) {
-                const updatedValue = currentValue.slice(0, indexToDelete) + currentValue.slice(indexToDelete + 1);
+                const updatedValue =
+                  currentValue.slice(0, indexToDelete) +
+                  currentValue.slice(indexToDelete + 1);
                 this.cellValues[key] = updatedValue;
               }
             } else if (currentLength === 2) {
-              this.cellValues[key] = 'Now';
+              this.cellValues[key] = "Now";
             }
           }
         } else if (this.selectedColumn === 4) {
-          const currentValue = this.cellValues[key] || '';
+          const currentValue = this.cellValues[key] || "";
           if (!isNaN(text)) {
             // 如果 text 是数字，则将数字插入到现有文本中空格前的数字后面
-            const spaceIndex = currentValue.indexOf(' ');
+            const spaceIndex = currentValue.indexOf(" ");
             if (spaceIndex !== -1) {
-              this.cellValues[key] = currentValue.slice(0, spaceIndex) + text + currentValue.slice(spaceIndex);
+              this.cellValues[key] =
+                currentValue.slice(0, spaceIndex) +
+                text +
+                currentValue.slice(spaceIndex);
             } else {
               this.cellValues[key] += text;
             }
-          } else if (text === 'Delete') {
+          } else if (text === "Delete") {
             // 如果 text 为 "Delete"，则删除空格前的数字部分的最后一位
-            const spaceIndex = currentValue.indexOf(' ');
+            const spaceIndex = currentValue.indexOf(" ");
             if (spaceIndex !== -1) {
               const numberPart = currentValue.slice(0, spaceIndex);
               if (numberPart.length > 0) {
-                this.cellValues[key] = numberPart.slice(0, -1) + currentValue.slice(spaceIndex);
+                this.cellValues[key] =
+                  numberPart.slice(0, -1) + currentValue.slice(spaceIndex);
               }
             }
-          } else if (text === 's/ms' && currentValue.includes('ms')) {
+          } else if (text === "s/ms" && currentValue.includes("ms")) {
             // 如果 text 是 "ms"，且现有文本包含 "ms"，则将 "ms" 修改为 "s"
-            this.cellValues[key] = currentValue.replace('ms', 's');
-          } else if (text === 's/ms' && currentValue.includes('s')) {
+            this.cellValues[key] = currentValue.replace("ms", "s");
+          } else if (text === "s/ms" && currentValue.includes("s")) {
             // 如果 text 是 "s"，且现有文本包含 "s"，则将 "s" 修改为 "ms"
-            this.cellValues[key] = currentValue.replace('s', 'ms');
-          } 
-        } else if (text === 'Delete') {
+            this.cellValues[key] = currentValue.replace("s", "ms");
+          }
+        } else if (text === "Delete") {
           // 如果 text 为 "Delete"，则删除单元格现有内容的最后一位
-          this.cellValues[key] = (this.cellValues[key] || '').slice(0, -1);
+          this.cellValues[key] = (this.cellValues[key] || "").slice(0, -1);
         } else {
           // 否则，在单元格现有内容的后面插入 text
-          this.cellValues[key] = (this.cellValues[key] || '') + text;
+          this.cellValues[key] = (this.cellValues[key] || "") + text;
         }
       }
     },
@@ -435,7 +464,7 @@ export default {
         const key = `${this.selectedRow}-${this.selectedColumn}`;
         if (this.selectedColumn === 1) {
           // 如果 selectedColumn 为 1，则直接赋值给单元格内容
-          this.cellValues[key] = ' ' + name;
+          this.cellValues[key] = " " + name;
         }
       }
     },
@@ -444,7 +473,7 @@ export default {
       if (this.selectedRow !== null && this.selectedColumn !== null) {
         const key = `${this.selectedRow}-${this.selectedColumn + 1}`;
         if (this.selectedColumn === 1) {
-          this.cellValues[key] = ' ' + RaDec;
+          this.cellValues[key] = " " + RaDec;
         }
       }
     },
@@ -454,7 +483,7 @@ export default {
       this.containerMaxHeight = Height - 130;
     },
     handleScrollB() {
-      this.$bus.$emit('scrollEventB', this.$refs.listB.scrollTop);
+      this.$bus.$emit("scrollEventB", this.$refs.listB.scrollTop);
       console.log(`handleScrollB: `, this.$refs.listB.scrollTop);
     },
     AddScheduleRow() {
@@ -462,9 +491,8 @@ export default {
 
       for (let column = 1; column <= this.numberOfColumns; column++) {
         const key = `${this.numberOfRows}-${column}`;
-        this.$set(this.cellValues, key, this.initialColumnValues[column] || '');
+        this.$set(this.cellValues, key, this.initialColumnValues[column] || "");
       }
-
     },
 
     initializeTable() {
@@ -474,17 +502,16 @@ export default {
           const key = `${row}-${column}`;
           // 如果当前单元格没有值，则设置默认值
           if (!this.cellValues[key]) {
-            const initialValue = this.initialColumnValues[column] || '';
+            const initialValue = this.initialColumnValues[column] || "";
             this.$set(this.cellValues, key, initialValue);
           }
         }
       }
     },
-
   },
 };
 </script>
-  
+
 <style>
 .table-container {
   overflow-x: auto;
@@ -495,13 +522,13 @@ export default {
   margin-left: auto;
 }
 
-.scrollable-container { 
+.scrollable-container {
   /*TODO: 设置最大高度，使内容超过该高度时出现滚动条 */
   max-height: 260px;
   /* height: calc(100% - 0px);  */
   overflow-y: auto; /* 垂直方向上出现滚动条 */
   position: relative; /* 使该容器相对定位，不会影响到表头的布局 */
-  
+
   &::-webkit-scrollbar {
     width: 0px; /* 设置滚动条宽度 */
   }
@@ -545,6 +572,4 @@ th {
   background-color: rgba(51, 218, 121, 0.7);
   backdrop-filter: blur(5px);
 }
-
-
 </style>

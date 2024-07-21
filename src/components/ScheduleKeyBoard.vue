@@ -1,6 +1,18 @@
 <template>
-  <div class="schedule-keyboard" :style="{ bottom: '0px', right: '100px', left: BoardLeft + 'px', height: '50px' }">
-    <button v-for="button in modeButtons" :key="button.value" @click="handleButtonClick(button)">
+  <div
+    class="schedule-keyboard"
+    :style="{
+      bottom: '0px',
+      right: '100px',
+      left: BoardLeft + 'px',
+      height: '50px',
+    }"
+  >
+    <button
+      v-for="button in modeButtons"
+      :key="button.value"
+      @click="handleButtonClick(button)"
+    >
       {{ button.label }}
     </button>
   </div>
@@ -8,12 +20,12 @@
 
 <script>
 export default {
-  name: 'ScheduleKeyBoard',
+  name: "ScheduleKeyBoard",
   props: {
     initialMode: {
       type: String,
-      default: 'Target'
-    }
+      default: "Target",
+    },
   },
   data() {
     return {
@@ -24,111 +36,110 @@ export default {
       isExpanded: false,
 
       CFWkeys: [
-        { label: '1', value: '1' },
-        { label: '2', value: '2' },
-        { label: '3', value: '3' },
-        { label: '4', value: '4' },
-        { label: '5', value: '5' },
-        { label: '6', value: '6' },
-        { label: '7', value: '7' },
+        { label: "1", value: "1" },
+        { label: "2", value: "2" },
+        { label: "3", value: "3" },
+        { label: "4", value: "4" },
+        { label: "5", value: "5" },
+        { label: "6", value: "6" },
+        { label: "7", value: "7" },
       ],
     };
   },
   computed: {
     modeButtons() {
       switch (this.mode) {
-        case 'Target':
+        case "Target":
           return [
-            { label: 'Prefix', value: 'Prefix' },
-            { label: '1', value: '1' },
-            { label: '2', value: '2' },
-            { label: '3', value: '3' },
-            { label: '4', value: '4' },
-            { label: '5', value: '5' },
-            { label: '6', value: '6' },
-            { label: '7', value: '7' },
-            { label: '8', value: '8' },
-            { label: '9', value: '9' },
-            { label: '0', value: '0' },
-            { label: 'Delete', value: 'Delete' }
+            { label: "Prefix", value: "Prefix" },
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
+            { label: "5", value: "5" },
+            { label: "6", value: "6" },
+            { label: "7", value: "7" },
+            { label: "8", value: "8" },
+            { label: "9", value: "9" },
+            { label: "0", value: "0" },
+            { label: "Delete", value: "Delete" },
           ];
-        case 'Time':
+        case "Time":
           return [
-            { label: '1', value: '1' },
-            { label: '2', value: '2' },
-            { label: '3', value: '3' },
-            { label: '4', value: '4' },
-            { label: '5', value: '5' },
-            { label: '6', value: '6' },
-            { label: '7', value: '7' },
-            { label: '8', value: '8' },
-            { label: '9', value: '9' },
-            { label: '0', value: '0' },
-            { label: 'Delete', value: 'Delete' }
-
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
+            { label: "5", value: "5" },
+            { label: "6", value: "6" },
+            { label: "7", value: "7" },
+            { label: "8", value: "8" },
+            { label: "9", value: "9" },
+            { label: "0", value: "0" },
+            { label: "Delete", value: "Delete" },
           ];
-        case 'ExpTime':
+        case "ExpTime":
           return [
-            { label: 's/ms', value: 's/ms' },
-            { label: '1', value: '1' },
-            { label: '2', value: '2' },
-            { label: '3', value: '3' },
-            { label: '4', value: '4' },
-            { label: '5', value: '5' },
-            { label: '6', value: '6' },
-            { label: '7', value: '7' },
-            { label: '8', value: '8' },
-            { label: '9', value: '9' },
-            { label: '0', value: '0' },
-            { label: 'Delete', value: 'Delete' }
+            { label: "s/ms", value: "s/ms" },
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
+            { label: "5", value: "5" },
+            { label: "6", value: "6" },
+            { label: "7", value: "7" },
+            { label: "8", value: "8" },
+            { label: "9", value: "9" },
+            { label: "0", value: "0" },
+            { label: "Delete", value: "Delete" },
           ];
-        case 'CFW':
+        case "CFW":
           return this.CFWkeys;
-        case 'Repeat':
+        case "Repeat":
           return [
-            { label: '1', value: '1' },
-            { label: '2', value: '2' },
-            { label: '3', value: '3' },
-            { label: '4', value: '4' },
-            { label: '5', value: '5' },
-            { label: '6', value: '6' },
-            { label: '7', value: '7' },
-            { label: '8', value: '8' },
-            { label: '9', value: '9' },
-            { label: '0', value: '0' },
-            { label: 'Delete', value: 'Delete' }
+            { label: "1", value: "1" },
+            { label: "2", value: "2" },
+            { label: "3", value: "3" },
+            { label: "4", value: "4" },
+            { label: "5", value: "5" },
+            { label: "6", value: "6" },
+            { label: "7", value: "7" },
+            { label: "8", value: "8" },
+            { label: "9", value: "9" },
+            { label: "0", value: "0" },
+            { label: "Delete", value: "Delete" },
           ];
-        case 'Type':
+        case "Type":
           return [
-            { label: 'Light', value: 'Light' },
-            { label: 'Dark', value: 'Dark' },
-            { label: 'Bias', value: 'Bias' },
-            { label: 'Flat', value: 'Flat' },
+            { label: "Light", value: "Light" },
+            { label: "Dark", value: "Dark" },
+            { label: "Bias", value: "Bias" },
+            { label: "Flat", value: "Flat" },
           ];
-        case 'Focus':
+        case "Focus":
           return [
-            { label: 'ON', value: 'ON' },
-            { label: 'OFF', value: 'OFF' },
+            { label: "ON", value: "ON" },
+            { label: "OFF", value: "OFF" },
           ];
         default:
           return [];
       }
-    }
+    },
   },
   created() {
-    this.$bus.$on('KeyBoardMode',this.changeMode);
-    this.$bus.$on('toggleScheduleKeyBoard', this.toggleMore);
-    this.$bus.$on('toggleSchedulePanel', this.setWeith);
-    this.$bus.$on('initCFWList', this.initCFWList);
+    this.$bus.$on("KeyBoardMode", this.changeMode);
+    this.$bus.$on("toggleScheduleKeyBoard", this.toggleMore);
+    this.$bus.$on("toggleSchedulePanel", this.setWeith);
+    this.$bus.$on("initCFWList", this.initCFWList);
   },
   methods: {
     handleButtonClick(button) {
-      console.log('Clicked button:', button);
-      this.$bus.$emit('EditContent',button.value);
+      console.log("Clicked button:", button);
+      this.$bus.$emit("EditContent", button.value);
     },
     changeMode(newMode) {
       // console.log('changeMode:', newMode);
-      this.$set(this, 'mode', newMode); // 更新 mode 并确保它是响应式的
+      this.$set(this, "mode", newMode); // 更新 mode 并确保它是响应式的
     },
     toggleMore() {
       this.isExpanded = !this.isExpanded;
@@ -143,16 +154,15 @@ export default {
       this.BoardLeft = window.innerWidth - 100;
     },
     initCFWList(list) {
-      console.log('Replace keys');
+      console.log("Replace keys");
       this.CFWkeys.splice(0, this.CFWkeys.length);
-      const parts = list.split(',');
-      for(let i = 0; i < parts.length; i++)
-      {
-        const newItem = { label: parts[i], value: (i+1) };
+      const parts = list.split(",");
+      for (let i = 0; i < parts.length; i++) {
+        const newItem = { label: parts[i], value: i + 1 };
         this.CFWkeys.push(newItem);
       }
     },
-  }
+  },
 };
 </script>
 
@@ -188,5 +198,4 @@ export default {
   transform: scale(0.95); /* 点击时缩小按钮 */
   background-color: rgba(255, 255, 255, 0.7);
 }
-
 </style>

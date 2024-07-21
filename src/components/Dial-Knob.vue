@@ -1,7 +1,31 @@
 <template>
-  <div class="Dial-Knob-Rect" :style="{ '--positionX': positionX + 'px', '--secondPositionX': secondPositionX + 'px', top: top + 'px', left: left + 'px', width: width + 'px', height: height + 'px' }">
-    <div class="indicator" @mousedown="startDrag" @mouseup="stopDrag" @touchstart="startDragMobile" @touchmove="onDragMobile" @touchend="stopDragMobile"></div>
-    <div class="second-indicator" @mousedown="startSecondDrag" @mouseup="stopSecondDrag" @touchstart="startSecondDragMobile" @touchmove="onSecondDragMobile" @touchend="stopSecondDragMobile"></div>
+  <div
+    class="Dial-Knob-Rect"
+    :style="{
+      '--positionX': positionX + 'px',
+      '--secondPositionX': secondPositionX + 'px',
+      top: top + 'px',
+      left: left + 'px',
+      width: width + 'px',
+      height: height + 'px',
+    }"
+  >
+    <div
+      class="indicator"
+      @mousedown="startDrag"
+      @mouseup="stopDrag"
+      @touchstart="startDragMobile"
+      @touchmove="onDragMobile"
+      @touchend="stopDragMobile"
+    ></div>
+    <div
+      class="second-indicator"
+      @mousedown="startSecondDrag"
+      @mouseup="stopSecondDrag"
+      @touchstart="startSecondDragMobile"
+      @touchmove="onSecondDragMobile"
+      @touchend="stopSecondDragMobile"
+    ></div>
   </div>
 </template>
 
@@ -15,11 +39,11 @@ export default {
       height: 80, // 初始高度
 
       DialWidth: 1,
-      
+
       positionX: 0,
       dragging: false,
       startPositionX: 0,
-      
+
       // 新滑块的数据
       secondPositionX: 190,
       secondDragging: false,
@@ -27,8 +51,8 @@ export default {
     };
   },
   created() {
-    this.$bus.$on('toggleHistogramPanel', this.setMaxWidth);
-    this.$bus.$on('ChangeDialPosition', this.ChangeDialPosition);
+    this.$bus.$on("toggleHistogramPanel", this.setMaxWidth);
+    this.$bus.$on("ChangeDialPosition", this.ChangeDialPosition);
   },
   methods: {
     setMaxWidth() {
@@ -45,12 +69,20 @@ export default {
     },
     onDrag(event) {
       if (this.dragging) {
-        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+        const clientX = event.touches
+          ? event.touches[0].clientX
+          : event.clientX;
         const newPositionX = clientX - this.startPositionX;
 
         // 确保滑块在组件范围内
-        this.positionX = Math.max(0, Math.min(newPositionX, this.secondPositionX));
-        this.positionX = Math.max(0, Math.min(newPositionX, this.width - this.DialWidth));
+        this.positionX = Math.max(
+          0,
+          Math.min(newPositionX, this.secondPositionX)
+        );
+        this.positionX = Math.max(
+          0,
+          Math.min(newPositionX, this.width - this.DialWidth)
+        );
 
         if (this.secondPositionX - this.positionX < this.DialWidth) {
           this.secondPositionX = this.positionX + this.DialWidth;
@@ -63,11 +95,11 @@ export default {
       this.dragging = false;
       document.removeEventListener("mousemove", this.onDrag);
       document.removeEventListener("mouseup", this.stopDrag);
-      
+
       const HistMin = this.mappedWidth(this.positionX);
       const HistMax = this.mappedWidth(this.secondPositionX);
       console.log("Hist Num:", HistMin, HistMax);
-      this.$bus.$emit('HandleHistogramNum', HistMin, HistMax);
+      this.$bus.$emit("HandleHistogramNum", HistMin, HistMax);
     },
 
     startDragMobile(event) {
@@ -82,8 +114,14 @@ export default {
         const clientX = event.touches[0].clientX;
         const newPositionX = clientX - this.startPositionX;
         // 确保滑块在组件范围内
-        this.positionX = Math.max(0, Math.min(newPositionX, this.secondPositionX));
-        this.positionX = Math.max(0, Math.min(newPositionX, this.width - this.DialWidth));
+        this.positionX = Math.max(
+          0,
+          Math.min(newPositionX, this.secondPositionX)
+        );
+        this.positionX = Math.max(
+          0,
+          Math.min(newPositionX, this.width - this.DialWidth)
+        );
 
         if (this.secondPositionX - this.positionX < this.DialWidth) {
           this.secondPositionX = this.positionX + this.DialWidth;
@@ -100,9 +138,9 @@ export default {
       const HistMin = this.mappedWidth(this.positionX);
       const HistMax = this.mappedWidth(this.secondPositionX);
       console.log("Hist Num:", HistMin, HistMax);
-      this.$bus.$emit('HandleHistogramNum', HistMin, HistMax);
+      this.$bus.$emit("HandleHistogramNum", HistMin, HistMax);
     },
-    
+
     // 新滑块的方法
     startSecondDrag(event) {
       event.preventDefault(); // 阻止默认触摸事件
@@ -113,11 +151,19 @@ export default {
     },
     onSecondDrag(event) {
       if (this.secondDragging) {
-        const clientX = event.touches ? event.touches[0].clientX : event.clientX;
+        const clientX = event.touches
+          ? event.touches[0].clientX
+          : event.clientX;
         const newSecondPositionX = clientX - this.secondStartPositionX;
 
-        this.secondStartPositionX = Math.max(this.positionX, Math.min(newSecondPositionX, this.width));
-        this.secondStartPositionX = Math.max(this.DialWidth, Math.min(newSecondPositionX, this.width));
+        this.secondStartPositionX = Math.max(
+          this.positionX,
+          Math.min(newSecondPositionX, this.width)
+        );
+        this.secondStartPositionX = Math.max(
+          this.DialWidth,
+          Math.min(newSecondPositionX, this.width)
+        );
 
         if (this.secondStartPositionX - this.positionX < this.DialWidth) {
           this.positionX = this.secondStartPositionX - this.DialWidth;
@@ -130,17 +176,18 @@ export default {
       this.secondDragging = false;
       document.removeEventListener("mousemove", this.onSecondDrag);
       document.removeEventListener("mouseup", this.stopSecondDrag);
-      
+
       const HistMin = this.mappedWidth(this.positionX);
       const HistMax = this.mappedWidth(this.secondPositionX);
       console.log("Hist Num:", HistMin, HistMax);
-      this.$bus.$emit('HandleHistogramNum', HistMin, HistMax);
+      this.$bus.$emit("HandleHistogramNum", HistMin, HistMax);
     },
 
     startSecondDragMobile(event) {
       event.preventDefault();
       this.secondDragging = true;
-      this.startsecondPositionX = event.touches[0].clientX - this.secondPositionX;
+      this.startsecondPositionX =
+        event.touches[0].clientX - this.secondPositionX;
       document.addEventListener("touchmove", this.onDragMobile);
       document.addEventListener("touchend", this.stopDragMobile);
     },
@@ -149,8 +196,14 @@ export default {
         const clientX = event.touches[0].clientX;
         const newSecondPositionX = clientX - this.startsecondPositionX;
         // 确保滑块在组件范围内
-        this.secondPositionX = Math.max(this.positionX, Math.min(newSecondPositionX, this.width));
-        this.secondPositionX = Math.max(this.DialWidth, Math.min(newSecondPositionX, this.width));
+        this.secondPositionX = Math.max(
+          this.positionX,
+          Math.min(newSecondPositionX, this.width)
+        );
+        this.secondPositionX = Math.max(
+          this.DialWidth,
+          Math.min(newSecondPositionX, this.width)
+        );
 
         if (this.secondPositionX - this.positionX < this.DialWidth) {
           this.positionX = this.secondPositionX - this.DialWidth;
@@ -167,14 +220,14 @@ export default {
       const HistMin = this.mappedWidth(this.positionX);
       const HistMax = this.mappedWidth(this.secondPositionX);
       console.log("Hist Num:", HistMin, HistMax);
-      this.$bus.$emit('HandleHistogramNum', HistMin, HistMax);
+      this.$bus.$emit("HandleHistogramNum", HistMin, HistMax);
     },
 
     ChangeDialPosition(min, max) {
       this.positionX = Math.round((min / 255) * this.width);
       this.secondPositionX = Math.round((max / 255) * this.width);
     },
-    
+
     mappedWidth(position) {
       // 映射原始的 width 到 0-255 的范围
       return Math.round((position / this.width) * 255);
@@ -192,7 +245,7 @@ export default {
   cursor: pointer;
   user-select: none;
   /* overflow: hidden; */
-  
+
   background-color: transparent;
   box-sizing: border-box; /* 设置box-sizing为border-box */
 }
@@ -205,7 +258,7 @@ export default {
   top: 50%;
   left: var(--positionX);
   transform: translate(-50%, -50%);
-  
+
   background-color: rgba(75, 155, 250, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
@@ -220,7 +273,7 @@ export default {
   top: 50%;
   left: var(--secondPositionX);
   transform: translate(-50%, -50%);
-  
+
   background-color: rgba(255, 0, 0, 0.5);
   border: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
@@ -235,13 +288,12 @@ export default {
   top: 50%;
   left: var(--positionX);
   transform: translate(-50%, -50%);
-  
+
   background-color: rgba(75, 155, 250, 1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   box-sizing: border-box;
 }
-
 
 .second-indicator:active {
   width: 2px;
@@ -251,11 +303,10 @@ export default {
   top: 50%;
   left: var(--secondPositionX);
   transform: translate(-50%, -50%);
-  
+
   background-color: rgba(255, 0, 0, 1);
   border: 1px solid rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(5px);
   box-sizing: border-box;
 }
 </style>
-

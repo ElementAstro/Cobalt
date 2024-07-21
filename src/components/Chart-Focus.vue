@@ -15,10 +15,10 @@
 </template>
 
 <script>
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 
 export default {
-  name: 'LineChart',
+  name: "LineChart",
   data() {
     return {
       containerMaxWidth: 150,
@@ -34,26 +34,29 @@ export default {
       FWHMMax: 0,
       isDragging: false,
       startX: 0,
-      deltaX: 0
+      deltaX: 0,
     };
   },
   mounted() {
     this.initChart();
   },
   created() {
-    this.$bus.$on('FocusPosition', this.changeRange_x);
-    this.$bus.$on('UpdateFWHM', this.UpdateFWHM);
-    this.$bus.$on('fitQuadraticCurve', this.fitQuadraticCurve);
-    this.$bus.$on('fitQuadraticCurve_minPoint', this.fitQuadraticCurve_minPoint);
-    this.$bus.$on('ClearfitQuadraticCurve', this.clearChartData2);
-    this.$bus.$on('ClearAllData', this.ClearAllData);
+    this.$bus.$on("FocusPosition", this.changeRange_x);
+    this.$bus.$on("UpdateFWHM", this.UpdateFWHM);
+    this.$bus.$on("fitQuadraticCurve", this.fitQuadraticCurve);
+    this.$bus.$on(
+      "fitQuadraticCurve_minPoint",
+      this.fitQuadraticCurve_minPoint
+    );
+    this.$bus.$on("ClearfitQuadraticCurve", this.clearChartData2);
+    this.$bus.$on("ClearAllData", this.ClearAllData);
   },
   methods: {
     initChart() {
       const Width = window.innerWidth;
       this.containerMaxWidth = Width - 435;
       const chartDom = this.$refs.linechart;
-      chartDom.style.width = this.containerMaxWidth + 'px';
+      chartDom.style.width = this.containerMaxWidth + "px";
       this.myChart = echarts.init(chartDom);
       this.renderChart(this.xAxis_min, this.xAxis_max);
     },
@@ -74,106 +77,112 @@ export default {
     endDrag() {
       this.isDragging = false;
       this.deltaX = 0;
-      this.$bus.$emit('setTargetPosition', (this.xAxis_min + this.xAxis_max) / 2);
+      this.$bus.$emit(
+        "setTargetPosition",
+        (this.xAxis_min + this.xAxis_max) / 2
+      );
     },
     renderChart(x_min, x_max) {
-      const y_max = this.chartData1.length > 0 ? Math.max(...this.chartData1.map(item => item[1])) * 2 : this.yAxis_max;
+      const y_max =
+        this.chartData1.length > 0
+          ? Math.max(...this.chartData1.map((item) => item[1])) * 2
+          : this.yAxis_max;
       const option = {
         grid: {
-          left: '0%',
-          right: '2%',
-          bottom: '0%',
-          top: '10%',
-          containLabel: true
+          left: "0%",
+          right: "2%",
+          bottom: "0%",
+          top: "10%",
+          containLabel: true,
         },
         xAxis: {
           min: x_min,
           max: x_max,
           axisLine: {
             lineStyle: {
-              color: 'rgba(200, 200, 200, 0.5)'  // x轴线颜色
-            }
+              color: "rgba(200, 200, 200, 0.5)", // x轴线颜色
+            },
           },
           axisLabel: {
-            color: 'white',
-            fontSize: 5
+            color: "white",
+            fontSize: 5,
           },
           splitLine: {
             show: true,
             lineStyle: {
-              color: 'rgba(128, 128, 128, 0.5)', 
+              color: "rgba(128, 128, 128, 0.5)",
               width: 1,
-              type: 'solid'
-            }
-          }
+              type: "solid",
+            },
+          },
         },
         yAxis: {
           min: this.yAxis_min,
           max: y_max,
           axisLine: {
             lineStyle: {
-              color: 'rgba(200, 200, 200, 0.5)'  // y轴线颜色
-            }
+              color: "rgba(200, 200, 200, 0.5)", // y轴线颜色
+            },
           },
           axisLabel: {
-            color: 'white',
-            fontSize: 5
+            color: "white",
+            fontSize: 5,
           },
           splitNumber: 3,
           splitLine: {
             show: true,
             lineStyle: {
-              color: 'rgba(128, 128, 128, 0.5)',
+              color: "rgba(128, 128, 128, 0.5)",
               width: 1,
-              type: 'solid'
-            }
-          }
+              type: "solid",
+            },
+          },
         },
         series: [
           {
-            name: 'FWHM',
-            type: 'scatter',
+            name: "FWHM",
+            type: "scatter",
             data: this.chartData1,
             itemStyle: {
-              color: 'red'
+              color: "red",
             },
-            symbolSize: 4
+            symbolSize: 4,
           },
           {
-            name: 'Dec',
-            type: 'line',
+            name: "Dec",
+            type: "line",
             data: this.chartData2,
             itemStyle: {
-              color: 'green'
+              color: "green",
             },
             lineStyle: {
-              width: 1
+              width: 1,
             },
-            symbolSize: 0
+            symbolSize: 0,
           },
           {
-            name: 'minPoint',
-            type: 'scatter',
+            name: "minPoint",
+            type: "scatter",
             data: this.chartData3,
             itemStyle: {
-              color: 'rgba(75, 155, 250, 0.7)'
+              color: "rgba(75, 155, 250, 0.7)",
             },
-            symbolSize: 4
+            symbolSize: 4,
           },
           {
-            name: 'MiddleLine',
-            type: 'line',
+            name: "MiddleLine",
+            type: "line",
             data: [
               [(this.xAxis_min + this.xAxis_max) / 2, this.yAxis_min],
-              [(this.xAxis_min + this.xAxis_max) / 2, y_max]
+              [(this.xAxis_min + this.xAxis_max) / 2, y_max],
             ],
             lineStyle: {
-              color: 'rgba(75, 155, 250, 0.7)',
-              width: 1
+              color: "rgba(75, 155, 250, 0.7)",
+              width: 1,
             },
-            symbol: 'none'
-          }
-        ]
+            symbol: "none",
+          },
+        ],
       };
       this.myChart.setOption(option);
     },
@@ -189,7 +198,12 @@ export default {
       this.xAxis_min = Number(target) - 3000;
       this.xAxis_max = Number(target) + 3000;
       this.currentX = target;
-      console.log("QHYCCD | changeRange_x:", current, this.xAxis_min, this.xAxis_max);
+      console.log(
+        "QHYCCD | changeRange_x:",
+        current,
+        this.xAxis_min,
+        this.xAxis_max
+      );
       this.renderChart(this.xAxis_min, this.xAxis_max);
     },
     clearChartData1() {
@@ -235,18 +249,18 @@ export default {
       this.addData_Line(newDataPoint);
     },
     fitQuadraticCurve_minPoint(x, y) {
-      console.log("QHYCCD | minPoint:", x, ',', y);
+      console.log("QHYCCD | minPoint:", x, ",", y);
       this.chartData3 = [];
       const newDataPoint = [x, y];
       this.chartData3.push(newDataPoint);
-    }
-  }
-}
+    },
+  },
+};
 </script>
 
 <style scoped>
 .linechart-panel {
-  background-color: rgba(0, 0, 0, 0.0);
+  background-color: rgba(0, 0, 0, 0);
   /* backdrop-filter: blur(5px); */
   border-radius: 5px;
   box-sizing: border-box;

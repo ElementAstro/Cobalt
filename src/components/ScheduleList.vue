@@ -21,7 +21,8 @@
         :style="{
           transform: dragIndex === index ? 'scale(0.95)' : 'none',
           zIndex: dragIndex === index ? '1' : '0',
-          backgroundColor: selectedIndex === index ? 'rgba(75, 155, 250, 0.7)' : 'transparent',
+          backgroundColor:
+            selectedIndex === index ? 'rgba(75, 155, 250, 0.7)' : 'transparent',
           cursor: selectedIndex === index ? 'grab' : 'default',
         }"
       >
@@ -29,31 +30,32 @@
       </div>
     </div>
 
-    <button @click="EditList" @touchend="active" class="get-click btn-AddData"
+    <button
+      @click="EditList"
+      @touchend="active"
+      class="get-click btn-AddData"
       :style="{
-        backgroundColor: isItemSelected === true ? 'rgba(250, 0, 0, 0.5)' : 'rgba(0, 0, 0, 0.3)',
+        backgroundColor:
+          isItemSelected === true
+            ? 'rgba(250, 0, 0, 0.5)'
+            : 'rgba(0, 0, 0, 0.3)',
       }"
     >
-      <span v-if="isItemSelected">
-        Delete
-      </span>
-      <span v-else>
-        Add
-      </span>
+      <span v-if="isItemSelected"> Delete </span>
+      <span v-else> Add </span>
     </button>
 
-    <button class="get-click btn-Process"> Process: 0% </button>
-    
+    <button class="get-click btn-Process">Process: 0%</button>
   </div>
 </template>
 
 <script>
 export default {
-  name: 'SchedulePanel',
+  name: "SchedulePanel",
   data() {
     return {
       width: 100,
-      itemList: ['0% ', '0% ', '0% ', '0% ', '0% ', '0% ', '0% ', '0% ', ],
+      itemList: ["0% ", "0% ", "0% ", "0% ", "0% ", "0% ", "0% ", "0% "],
       dragIndex: null,
       offsetY: 0,
       selectedIndex: null, // 存储选中项的索引
@@ -63,15 +65,15 @@ export default {
   },
   created() {
     // 监听来自事件总线的滚动事件
-    this.$bus.$on('scrollEventB', (scrollTop) => {
+    this.$bus.$on("scrollEventB", (scrollTop) => {
       // 使用 scrollTo 方法控制 A 组件的滚动
       this.$refs.listA.scrollTo(0, scrollTop);
     });
-    this.$bus.$on('UpdateScheduleProcess', this.setScheduleItemList);
+    this.$bus.$on("UpdateScheduleProcess", this.setScheduleItemList);
   },
   methods: {
     setScheduleItemList(RowNum, Process) {
-      this.itemList[RowNum] = Process + '%';
+      this.itemList[RowNum] = Process + "%";
     },
     handleItemClick(index) {
       console.log(`Item clicked: ${this.itemList[index]}`);
@@ -79,41 +81,37 @@ export default {
       if (this.selectedIndex === index) {
         this.selectedIndex = null; // 如果已经选中，再次点击取消选中
         this.isItemSelected = false;
-        this.$bus.$emit('NoSelectedScheduleRow');
+        this.$bus.$emit("NoSelectedScheduleRow");
       } else {
         this.selectedIndex = index;
         this.isItemSelected = true;
-        this.$bus.$emit('NoSelectedScheduleRow');
-        this.$bus.$emit('SelectedScheduleRow', index + 1);
+        this.$bus.$emit("NoSelectedScheduleRow");
+        this.$bus.$emit("SelectedScheduleRow", index + 1);
       }
     },
     EditList() {
-      if(this.isItemSelected === false)
-      {
-        this.itemList.push('0%');
-        this.$bus.$emit('AddScheduleRow');
-      }
-      else
-      {
+      if (this.isItemSelected === false) {
+        this.itemList.push("0%");
+        this.$bus.$emit("AddScheduleRow");
+      } else {
         // 删除选中的列表项
         if (this.selectedIndex !== null) {
-          this.$bus.$emit('DeleteSelectedScheduleRow',this.selectedIndex + 1);
+          this.$bus.$emit("DeleteSelectedScheduleRow", this.selectedIndex + 1);
           this.itemList.splice(this.selectedIndex, 1);
           this.selectedIndex = null;
           this.isItemSelected = false;
-          this.$bus.$emit('NoSelectedScheduleRow');
+          this.$bus.$emit("NoSelectedScheduleRow");
         }
-      } 
+      }
     },
     active() {},
     handleTouchStart(event, index) {
       // 检查是否选中，只有选中项才能拖动
       if (this.selectedIndex === index) {
         this.dragIndex = index;
-        this.offsetY = event.touches[0].clientY - event.target.getBoundingClientRect().top;
-      }
-      else
-      {
+        this.offsetY =
+          event.touches[0].clientY - event.target.getBoundingClientRect().top;
+      } else {
         this.startY = event.touches[0].clientY;
       }
     },
@@ -124,8 +122,7 @@ export default {
         this.handleDragOver(event, targetIndex);
       }
 
-      if(this.isItemSelected === false)
-      {
+      if (this.isItemSelected === false) {
         // 计算手指在垂直方向上的滑动距离
         const deltaY = event.touches[0].clientY - this.startY;
 
@@ -135,7 +132,6 @@ export default {
         // 更新起始位置信息
         this.startY = event.touches[0].clientY;
       }
-
     },
     handleTouchEnd() {
       if (this.dragIndex !== null) {
@@ -151,11 +147,15 @@ export default {
         const rect = event.currentTarget.getBoundingClientRect();
         const mouseY = event.touches[0].clientY;
         const offsetY = mouseY - rect.top;
-        this.itemList.splice(targetIndex, 0, this.itemList.splice(this.dragIndex, 1)[0]);
+        this.itemList.splice(
+          targetIndex,
+          0,
+          this.itemList.splice(this.dragIndex, 1)[0]
+        );
         this.dragIndex = targetIndex;
         this.selectedIndex = targetIndex;
 
-        this.$bus.$emit('MoveScheduleRow',targetIndex + 1);
+        this.$bus.$emit("MoveScheduleRow", targetIndex + 1);
 
         // Apply offsetY
         if (offsetY < rect.height / 2) {
@@ -167,7 +167,11 @@ export default {
     },
     handleDrop(targetIndex) {
       if (this.dragIndex !== null && this.dragIndex !== targetIndex) {
-        this.itemList.splice(targetIndex, 0, this.itemList.splice(this.dragIndex, 1)[0]);
+        this.itemList.splice(
+          targetIndex,
+          0,
+          this.itemList.splice(this.dragIndex, 1)[0]
+        );
       }
     },
     calculateTargetIndex(clientY) {
@@ -177,14 +181,14 @@ export default {
       return Math.max(0, Math.min(targetIndex, this.itemList.length - 1));
     },
     clearStyles() {
-      const items = document.querySelectorAll('.list-item');
-      items.forEach(item => {
-        item.style.zIndex = '0';
-        item.style.transform = 'none';
+      const items = document.querySelectorAll(".list-item");
+      items.forEach((item) => {
+        item.style.zIndex = "0";
+        item.style.transform = "none";
       });
     },
     handleScrollA() {
-      this.$bus.$emit('scrollEventA', this.$refs.listA.scrollTop);
+      this.$bus.$emit("scrollEventA", this.$refs.listA.scrollTop);
     },
   },
 };
@@ -196,7 +200,7 @@ export default {
   background-color: rgba(128, 128, 128, 0.5);
   backdrop-filter: blur(5px);
   border-radius: 5px;
-  overflow: hidden;                                                                                                                                               
+  overflow: hidden;
 }
 
 .list-container {
@@ -233,7 +237,7 @@ export default {
   user-select: none;
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
-  border-radius: 5px; 
+  border-radius: 5px;
   box-sizing: border-box;
 }
 
@@ -244,14 +248,14 @@ export default {
   color: #fff;
   user-select: none;
   /* position:absolute; */
-  background-color: rgba(0, 0, 0, 0.0);
+  background-color: rgba(0, 0, 0, 0);
   backdrop-filter: blur(5px);
-  border-radius: 5px; 
+  border-radius: 5px;
   box-sizing: border-box;
 }
 
 .btn-Process {
-  position:absolute;
+  position: absolute;
   height: 40px;
   width: 100px;
   top: 0px;
@@ -260,7 +264,7 @@ export default {
   user-select: none;
   background-color: rgba(0, 0, 0, 0.3);
   backdrop-filter: blur(5px);
-  border-radius: 5px; 
+  border-radius: 5px;
   box-sizing: border-box;
 }
 

@@ -1,21 +1,24 @@
 <template>
   <div>
-    <div ref="barchart" :style="{ width: containerMaxWidth + 'px', height: 80 + 'px' }" class="barchart-panel"></div>
+    <div
+      ref="barchart"
+      :style="{ width: containerMaxWidth + 'px', height: 80 + 'px' }"
+      class="barchart-panel"
+    ></div>
   </div>
 </template>
 
-
 <script>
-import * as echarts from 'echarts';
+import * as echarts from "echarts";
 
 export default {
-  name: 'BarChart',
+  name: "BarChart",
   data() {
     return {
       containerMaxWidth: 190,
-      barData: [],  // 示例数据
+      barData: [], // 示例数据
       xAxis_min: 0,
-      xAxis_max: 255, 
+      xAxis_max: 255,
 
       histogram_min: 0,
       histogram_max: 255,
@@ -26,7 +29,7 @@ export default {
   },
   created() {
     // this.$bus.$on('InitChart', this.setMaxWidth);
-    this.$bus.$on('showHistogram', this.addDataToChart);
+    this.$bus.$on("showHistogram", this.addDataToChart);
   },
   methods: {
     // setMaxWidth() {
@@ -42,92 +45,105 @@ export default {
       const Width = window.innerWidth;
       this.containerMaxWidth = Width - 350;
       const chartDom = this.$refs.barchart;
-      chartDom.style.width = this.containerMaxWidth + 'px';
+      chartDom.style.width = this.containerMaxWidth + "px";
       this.myChart = echarts.init(chartDom);
       this.renderChart(this.xAxis_min, this.xAxis_max);
     },
 
     renderChart(x_min, x_max) {
-      const yAxisMax = Math.max(...this.barData.map(item => item[1]));  // 获取 y 轴的最大值
+      const yAxisMax = Math.max(...this.barData.map((item) => item[1])); // 获取 y 轴的最大值
       const option = {
         grid: {
-          left: '-1%',
-          right: '1%',
-          bottom: '0%',
-          top: '0%',
-          containLabel: true
+          left: "-1%",
+          right: "1%",
+          bottom: "0%",
+          top: "0%",
+          containLabel: true,
         },
         xAxis: {
-          type: 'value',
+          type: "value",
           min: x_min,
           max: x_max,
           axisLine: {
             lineStyle: {
-              color: 'white'
-            }
+              color: "white",
+            },
           },
           axisLabel: null,
-          splitLine: {  // 隐藏 x 轴的网格线
-            show: false
-          }
+          splitLine: {
+            // 隐藏 x 轴的网格线
+            show: false,
+          },
         },
         yAxis: {
-          type: 'value',
-          max: yAxisMax,  // 使用动态获取的 y 轴最大值
+          type: "value",
+          max: yAxisMax, // 使用动态获取的 y 轴最大值
           axisLine: {
             lineStyle: {
-              color: 'white'
-            }
+              color: "white",
+            },
           },
           axisLabel: null,
-          splitLine: {  // 隐藏 x 轴的网格线
-            show: false
-          }
+          splitLine: {
+            // 隐藏 x 轴的网格线
+            show: false,
+          },
         },
-        series: []
+        series: [],
       };
 
       // 为每个通道创建对应的 series
       for (let channel = 0; channel < 3; channel++) {
         option.series.push({
           data: this.barData[channel], // 注意这里的数据结构
-          type: 'line',
+          type: "line",
           itemStyle: {
-            color: channel === 0 ? 'rgba(0,120,212,0.7)' : (channel === 1 ? 'rgba(51,218,121,0.7)' : 'rgba(255,0,0,0.7)') // 根据通道选择颜色
+            color:
+              channel === 0
+                ? "rgba(0,120,212,0.7)"
+                : channel === 1
+                ? "rgba(51,218,121,0.7)"
+                : "rgba(255,0,0,0.7)", // 根据通道选择颜色
           },
-          symbolSize: 0
+          symbolSize: 0,
         });
       }
 
       // 在这里可以继续添加其他通道的曲线，也可以根据需要修改颜色
 
       option.series.push({
-        data: [[this.histogram_min, 0], [this.histogram_min, yAxisMax]],  // 数据格式为 [x, y]
-        type: 'line',
+        data: [
+          [this.histogram_min, 0],
+          [this.histogram_min, yAxisMax],
+        ], // 数据格式为 [x, y]
+        type: "line",
         lineStyle: {
-          color: 'blue',  // 设置线的颜色
-          type: 'dashed',  // 设置线的类型，可以为 'solid', 'dashed', 'dotted'
-          width: 1
+          color: "blue", // 设置线的颜色
+          type: "dashed", // 设置线的类型，可以为 'solid', 'dashed', 'dotted'
+          width: 1,
         },
-        symbolSize: 0
+        symbolSize: 0,
       });
 
       option.series.push({
-        data: [[this.histogram_max, 0], [this.histogram_max, yAxisMax]],
-        type: 'line',
+        data: [
+          [this.histogram_max, 0],
+          [this.histogram_max, yAxisMax],
+        ],
+        type: "line",
         lineStyle: {
-          color: 'red',
-          type: 'dashed',
-          width: 1
+          color: "red",
+          type: "dashed",
+          width: 1,
         },
-        symbolSize: 0
+        symbolSize: 0,
       });
 
       this.myChart.setOption(option);
     },
-    
+
     addDataToChart(histogramData) {
-            this.clearBarData();
+      this.clearBarData();
 
       // 初始化最小和最大值的索引
       let firstNonZeroIndex = -1;
@@ -161,22 +177,25 @@ export default {
       this.histogram_min = firstNonZeroIndex;
       this.histogram_max = lastNonZeroIndex;
 
-      this.$bus.$emit('AutoHistogramNum', this.histogram_min, this.histogram_max);
+      this.$bus.$emit(
+        "AutoHistogramNum",
+        this.histogram_min,
+        this.histogram_max
+      );
 
-      console.log('First Non-Zero Index:', firstNonZeroIndex);
-      console.log('Last Non-Zero Index:', lastNonZeroIndex);
+      console.log("First Non-Zero Index:", firstNonZeroIndex);
+      console.log("Last Non-Zero Index:", lastNonZeroIndex);
 
-            this.renderChart(this.xAxis_min, this.xAxis_max);
+      this.renderChart(this.xAxis_min, this.xAxis_max);
     },
 
     clearBarData() {
-      this.barData = [];  // 清空数据
-      this.renderChart(this.xAxis_min, this.xAxis_max);  // 重新渲染图表
-    }
-  }
-}
+      this.barData = []; // 清空数据
+      this.renderChart(this.xAxis_min, this.xAxis_max); // 重新渲染图表
+    },
+  },
+};
 </script>
-
 
 <style scoped>
 .barchart-panel {
@@ -187,8 +206,3 @@ export default {
   /* border: 1px solid rgba(255, 255, 255, 0.8); */
 }
 </style>
-
-
-
-
-

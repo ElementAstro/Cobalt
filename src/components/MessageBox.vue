@@ -1,7 +1,13 @@
 <template>
   <transition ref="messageBox" name="message-slide">
-    <div v-if="showMessage" class="message-box" :class="{ 'message-box-expanded': isExpanded }" :style="messageStyle"
-      @click="expandMessage" key="message-box">
+    <div
+      v-if="showMessage"
+      class="message-box"
+      :class="{ 'message-box-expanded': isExpanded }"
+      :style="messageStyle"
+      @click="expandMessage"
+      key="message-box"
+    >
       <div class="message-content">
         {{ message }}
       </div>

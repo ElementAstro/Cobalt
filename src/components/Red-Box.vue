@@ -1,8 +1,19 @@
 <template>
-  <div class="floating-box" :style="{ top: top + 'px', left: left + 'px', width: width + 'px', height: height + 'px' }">
-    <div class="drag-handle" v-if="isDragging" @mousedown="startDrag" @touchstart="startDragTouch">
-    
-    </div>
+  <div
+    class="floating-box"
+    :style="{
+      top: top + 'px',
+      left: left + 'px',
+      width: width + 'px',
+      height: height + 'px',
+    }"
+  >
+    <div
+      class="drag-handle"
+      v-if="isDragging"
+      @mousedown="startDrag"
+      @touchstart="startDragTouch"
+    ></div>
   </div>
 </template>
 
@@ -44,14 +55,35 @@ export default {
     },
     onMouseMove(event) {
       if (this.isDragging) {
-        this.top = Math.max(0, Math.min(window.innerHeight - this.height, event.clientY - this.startY));
-        this.left = Math.max(0, Math.min(window.innerWidth - this.width, event.clientX - this.startX));
+        this.top = Math.max(
+          0,
+          Math.min(
+            window.innerHeight - this.height,
+            event.clientY - this.startY
+          )
+        );
+        this.left = Math.max(
+          0,
+          Math.min(window.innerWidth - this.width, event.clientX - this.startX)
+        );
       }
     },
     onTouchMove(event) {
       if (this.isDragging) {
-        this.top = Math.max(0, Math.min(window.innerHeight - this.height, event.touches[0].clientY - this.startY));
-        this.left = Math.max(0, Math.min(window.innerWidth - this.width, event.touches[0].clientX - this.startX));
+        this.top = Math.max(
+          0,
+          Math.min(
+            window.innerHeight - this.height,
+            event.touches[0].clientY - this.startY
+          )
+        );
+        this.left = Math.max(
+          0,
+          Math.min(
+            window.innerWidth - this.width,
+            event.touches[0].clientX - this.startX
+          )
+        );
       }
     },
     onMouseUp() {
@@ -72,7 +104,6 @@ export default {
       this.left = (windowWidth - 100) / 2; // 100是小红框的宽度
       this.top = (windowHeight - 100) / 2; // 100是小红框的高度
     },
-    
   },
 };
 </script>
@@ -111,4 +142,3 @@ button {
   margin-right: 10px;
 }
 </style>
-

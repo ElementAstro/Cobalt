@@ -1,12 +1,14 @@
 <template>
   <div class="circular-button no-select">
     <svg
-      @touchstart="handleMouseDown" @touchend="handleMouseUp"
-      @mousedown="handleMouseDown" @mouseup="handleMouseUp"
+      @touchstart="handleMouseDown"
+      @touchend="handleMouseUp"
+      @mousedown="handleMouseDown"
+      @mouseup="handleMouseUp"
       :width="svgSize"
       :height="svgSize"
       :viewBox="'0 0 ' + svgSize + ' ' + svgSize"
-      style="cursor: pointer;"
+      style="cursor: pointer"
     >
       <!-- 背景圆圈 -->
       <circle
@@ -18,7 +20,7 @@
         :stroke-width="strokeWidth"
       />
       <!-- 红色进度条（长按时显示） -->
-       <circle
+      <circle
         v-if="isLongPress"
         :cx="svgSize / 2"
         :cy="svgSize / 2"
@@ -57,14 +59,14 @@
       </text>
 
       <image
-        :x="svgSize / 2" 
+        :x="svgSize / 2"
         :y="svgSize / 2"
         v-if="!isClicked"
         xlink:href="@/assets/images/svg/ui/media record.svg"
-        width="20px" height="20px"
-        style="transform: translate(-8px, -10px);"
+        width="20px"
+        height="20px"
+        style="transform: translate(-8px, -10px)"
       />
-
     </svg>
   </div>
 </template>
@@ -90,12 +92,12 @@ export default {
     };
   },
   created() {
-    this.$bus.$on('showCaptureImage', this.overProgress);
-    this.$bus.$on('SetExpTime',this.SetDuration);
-    this.$bus.$on('CameraInExposuring',this.setInProgress);
+    this.$bus.$on("showCaptureImage", this.overProgress);
+    this.$bus.$on("SetExpTime", this.SetDuration);
+    this.$bus.$on("CameraInExposuring", this.setInProgress);
   },
   mounted() {
-    this.$bus.$emit('AppSendMessage', 'Vue_Command', 'getCaptureStatus');
+    this.$bus.$emit("AppSendMessage", "Vue_Command", "getCaptureStatus");
   },
   computed: {
     svgSize() {
@@ -107,7 +109,7 @@ export default {
       return 2 * Math.PI * this.radius;
     },
     progressText() {
-      return this.isClicked ? `${(this.progress * 100).toFixed(0)}%` : '';
+      return this.isClicked ? `${(this.progress * 100).toFixed(0)}%` : "";
     },
     fontSize() {
       // 字体大小可以根据按钮的大小动态计算
@@ -120,7 +122,10 @@ export default {
       if (this.isClicked) {
         this.startLongPressAnimation();
         this.longPressTimer = setTimeout(() => {
-          if (Date.now() - this.mousePressTimestamp >= this.longPressThreshold) {
+          if (
+            Date.now() - this.mousePressTimestamp >=
+            this.longPressThreshold
+          ) {
             // 处理长按逻辑
             cancelAnimationFrame(this.animationRequest);
             this.resetProgress();
@@ -145,7 +150,11 @@ export default {
 
     animateProgress() {
       if (this.isClicked) return; // 如果已点击，则退出方法
-      this.$bus.$emit('AppSendMessage', 'Vue_Command', 'takeExposure:'+this.animationDuration);
+      this.$bus.$emit(
+        "AppSendMessage",
+        "Vue_Command",
+        "takeExposure:" + this.animationDuration
+      );
       this.isClicked = true;
       const startTime = performance.now();
       const animate = (currentTime) => {
@@ -195,7 +204,7 @@ export default {
         } else {
           this.longPressProgress = 1;
           cancelAnimationFrame(this.longPressAnimationRequest);
-          this.$bus.$emit('AppSendMessage', 'Vue_Command', 'abortExposure');
+          this.$bus.$emit("AppSendMessage", "Vue_Command", "abortExposure");
           // 延时2秒后重置进度
           setTimeout(() => {
             this.resetlongPressProgress();
@@ -215,7 +224,6 @@ export default {
       this.progress = 0.99;
       this.isClicked = true;
     },
-
   },
 };
 </script>
@@ -226,7 +234,4 @@ export default {
   justify-content: center;
   align-items: center;
 }
-
 </style>
-
-
