@@ -1,67 +1,142 @@
-// Stellarium Web - Copyright (c) 2022 - Stellarium Labs SRL
-//
-// This program is licensed under the terms of the GNU AGPL v3, or
-// alternatively under a commercial licence.
-//
-// The terms of the AGPL v3 license can be found in the main directory of this
-// repository.
+// Stellarium Web - Copyright (c) 2022 - Stellarium Labs SRL // // This program
+is licensed under the terms of the GNU AGPL v3, or // alternatively under a
+commercial licence. // // The terms of the AGPL v3 license can be found in the
+main directory of this // repository.
 
 <template>
-<div class="click-through" style="position:absolute; z-index: 1; width: 100%; height: 100%; display:flex; align-items: flex-end;">
-  <div v-show="showRedBox" class="red-box" :style="{ top: mouseY + 'px', left: mouseX + 'px', width: RedBoxWidth + 'px', height: RedBoxHeight + 'px' }"></div>
-  <message-box v-if="isMessageBoxShow" ref="messageBox"></message-box>
-  <div>
-    <transition name="ToolBar">
-      <toolbar v-show="showToolbar" v-if="$store.state.showMainToolBar" class="get-click"></toolbar>
+  <div
+    class="click-through"
+    style="
+      position: absolute;
+      z-index: 1;
+      width: 100%;
+      height: 100%;
+      display: flex;
+      align-items: flex-end;
+    "
+  >
+    <div
+      v-show="showRedBox"
+      class="red-box"
+      :style="{
+        top: mouseY + 'px',
+        left: mouseX + 'px',
+        width: RedBoxWidth + 'px',
+        height: RedBoxHeight + 'px',
+      }"
+    ></div>
+    <message-box v-if="isMessageBoxShow" ref="messageBox"></message-box>
+    <div>
+      <transition name="ToolBar">
+        <toolbar
+          v-show="showToolbar"
+          v-if="$store.state.showMainToolBar"
+          class="get-click"
+        ></toolbar>
+      </transition>
+    </div>
+    <!--
+    <transition name="LeftBtn">
+      <button
+        v-show="showMountSwitch"
+        @click="toggleImageManagerPanel"
+        class="get-click btn-ImageManagerPanelSwitchL"
+      >
+        div style="display: flex; justify-content: center; align-items: center;">
+        <img src="@/assets/images/svg/ui/FolderSwitch.svg" height="30px" style="min-height: 30px"/>
+      </div> 
+        <v-icon color="rgba(255, 255, 255)"> mdi-folder-image </v-icon>
+      </button>
     </transition>
-  </div>
-  <observing-panel></observing-panel>
-  <template v-for="(item, i) in pluginsGuiComponents">
-    <component :is="item" :key="i"></component>
-  </template>
-  <template v-for="(item, i) in dialogs">
-    <component :is="item" :key="i + pluginsGuiComponents.length"></component>
-  </template>
-  <selected-object-info style="position: absolute; top: 48px; left: 0px; width: 350px; max-width: calc(100vw - 12px); margin: 6px" class="get-click"></selected-object-info>
+    -->
+    
+    <observing-panel></observing-panel>
+    <template v-for="(item, i) in pluginsGuiComponents">
+      <component :is="item" :key="i"></component>
+    </template>
+    <template v-for="(item, i) in dialogs">
+      <component :is="item" :key="i + pluginsGuiComponents.length"></component>
+    </template>
+    <selected-object-info
+      style="
+        position: absolute;
+        top: 48px;
+        left: 0px;
+        width: 350px;
+        max-width: calc(100vw - 12px);
+        margin: 6px;
+      "
+      class="get-click"
+    ></selected-object-info>
 
-  <transition name="RightBtn">
-    <button v-show="showMountSwitch" @click="toggleImageManagerPanel" class="get-click btn-ImageManagerPanelSwitch">
-      <!-- <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/FolderSwitch.svg" height="30px" style="min-height: 30px"></img>
-      </div> -->
-      <v-icon color="rgba(255, 255, 255)"> mdi-folder-image </v-icon>
-    </button>
-  </transition>
-
-  <div>
     <transition name="RightBtn">
-    <button v-show="showMountSwitch" @click="toggleFloatingBox" class="get-click btn-MountPanelSwitch">
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/mount.svg" height="33px" style="min-height: 33px"></img>
-      </div>
-    </button>
+      <button
+        v-show="showMountSwitch"
+        @click="toggleImageManagerPanel"
+        class="get-click btn-ImageManagerPanelSwitch"
+      >
+        <!-- <div style="display: flex; justify-content: center; align-items: center;">
+        <img src="@/assets/images/svg/ui/FolderSwitch.svg" height="30px" style="min-height: 30px"/>
+      </div> -->
+        <v-icon color="rgba(255, 255, 255)"> mdi-folder-image </v-icon>
+      </button>
     </transition>
-    <mount-control-panel v-show="showFloatingBox" style="position: absolute; top: 50px; right: 10px; " class="get-click"></mount-control-panel>
-  </div>
-  
 
-  <!-- 设备设置窗口组件 -->
-  <MountSettingWindow ref="mountDialog"></MountSettingWindow>
-  <PoleCameraSettingWindow ref="polecameraDialog"></PoleCameraSettingWindow>
-  <MainCameraSettingWindow ref="maincameraDialog"></MainCameraSettingWindow>
-  <GuiderSettingWindow ref="guiderDialog"></GuiderSettingWindow>
-  <FocuserSettingWindow ref="focuserDialog"></FocuserSettingWindow>
-  <CFWSettingWindow ref="cfwDialog"></CFWSettingWindow>
+    <div>
+      <transition name="RightBtn">
+        <button
+          v-show="showMountSwitch"
+          @click="toggleFloatingBox"
+          class="get-click btn-MountPanelSwitch"
+        >
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              src="@/assets/images/svg/ui/mount.svg"
+              height="33px"
+              style="min-height: 33px"
+            />
+          </div>
+        </button>
+      </transition>
+      <mount-control-panel
+        v-show="showFloatingBox"
+        style="position: absolute; top: 50px; right: 10px"
+        class="get-click"
+      ></mount-control-panel>
+    </div>
 
-  <progress-bars style="position: absolute; bottom: 54px; right: 12px;"></progress-bars>
+    <!-- 设备设置窗口组件 -->
+    <MountSettingWindow ref="mountDialog"></MountSettingWindow>
+    <PoleCameraSettingWindow ref="polecameraDialog"></PoleCameraSettingWindow>
+    <MainCameraSettingWindow ref="maincameraDialog"></MainCameraSettingWindow>
+    <GuiderSettingWindow ref="guiderDialog"></GuiderSettingWindow>
+    <FocuserSettingWindow ref="focuserDialog"></FocuserSettingWindow>
+    <CFWSettingWindow ref="cfwDialog"></CFWSettingWindow>
 
-  <div>
-    <transition name="BottomBar">
-      <bottom-bar v-show="isBottomBarShow" style="position:absolute; width: 100%; justify-content: center; bottom: 0; display:flex; margin-bottom: 0px" class="get-click"></bottom-bar>
-    </transition>
-  </div>
+    <progress-bars
+      style="position: absolute; bottom: 54px; right: 12px"
+    ></progress-bars>
 
-  <!-- <div v-show="isExpTimeBarShow" class="exp-time-btn-bar-container">
+    <div>
+      <transition name="BottomBar">
+        <bottom-bar
+          v-show="isBottomBarShow"
+          style="
+            position: absolute;
+            width: 100%;
+            justify-content: center;
+            bottom: 0;
+            display: flex;
+            margin-bottom: 0px;
+          "
+          class="get-click"
+        ></bottom-bar>
+      </transition>
+    </div>
+
+    <!-- <div v-show="isExpTimeBarShow" class="exp-time-btn-bar-container">
     <exp-time-btn-bar @time-selected="handleExpTimeSelected" class="get-click"></exp-time-btn-bar>
   </div>
 
@@ -70,113 +145,193 @@
   </div>
 
   <button v-if="isCaptureMode" @click="Switch_ExpTime_CFW" class="get-click btn-ExpTime-CFW-Switch">Switch ExpTime CFW</button> -->
+    <transition name="BottomBtn">
+      <button
+        v-show="isMainSwitchShow"
+        @click="toggleChartsPanel"
+        class="get-click btn-ChartsSwitch"
+      >
+        <div
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <img
+            src="@/assets/images/svg/ui/GuidingPanel.svg"
+            height="35px"
+            style="min-height: 35px"
+          />
+        </div>
+      </button>
+    </transition>
+    <transition name="BottomBtn">
+      <button
+        v-show="isMainSwitchShow"
+        @click="SwitchMainPage"
+        class="get-click btn-MainPageSwitch"
+      >
+        <span v-if="CurrentMainPage === 'Stel'">
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              src="@/assets/images/svg/ui/sheying.svg"
+              height="33px"
+              style="min-height: 33px"
+            />
+          </div>
+        </span>
+        <span v-if="CurrentMainPage === 'MainCamera'">
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              src="@/assets/images/svg/ui/Guiding Curve.svg"
+              height="33px"
+              style="min-height: 33px"
+            />
+          </div>
+        </span>
+        <span v-if="CurrentMainPage === 'GuiderCamera'">
+          <div
+            style="display: flex; justify-content: center; align-items: center"
+          >
+            <img
+              src="@/assets/images/svg/ui/skymap.svg"
+              height="33px"
+              style="min-height: 33px"
+            />
+          </div>
+        </span>
+      </button>
+    </transition>
 
-  <transition name="BottomBtn">
-  <button v-show="isMainSwitchShow" @click="SwitchMainPage" class="get-click btn-MainPageSwitch">
-    <span v-if="CurrentMainPage === 'Stel'">
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/sheying.svg" height="33px" style="min-height: 33px"></img>
-      </div>
-    </span>
-    <span v-if="CurrentMainPage === 'MainCamera'">
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/Guiding Curve.svg" height="33px" style="min-height: 33px"></img>
-      </div>
-    </span>
-    <span v-if="CurrentMainPage === 'GuiderCamera'">
-      <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/skymap.svg" height="33px" style="min-height: 33px"></img>
-      </div>
-    </span>
-  </button>
-  </transition>
-
-  <!-- <div v-show="isCaptureMode">
+    <!-- <div v-show="isCaptureMode">
     <CircularProgressButton ref="CaptureBtn" class="get-click btn-Capture" />
   </div> -->
 
-  <ChartComponent v-show="showChartsPanel" style="position: absolute; bottom: 10px; left: 170px; " class="get-click"/>
-  <transition name="BottomBtn">
-  <button  v-show="isCaptureMode" @click="toggleChartsPanel" class="get-click btn-ChartsSwitch">
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <img src="@/assets/images/svg/ui/GuidingPanel.svg" height="35px" style="min-height: 35px"></img>
-    </div>
-  </button>
-  </transition>
+    <ChartComponent
+      v-show="showChartsPanel"
+      style="position: absolute; bottom: 10px; left: 170px"
+      class="get-click"
+    />
+    <transition name="BottomBtn">
+      <button
+        v-show="isCaptureMode"
+        @click="toggleChartsPanel"
+        class="get-click btn-ChartsSwitch"
+      >
+        <div
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <img
+            src="@/assets/images/svg/ui/GuidingPanel.svg"
+            height="35px"
+            style="min-height: 35px"
+          />
+        </div>
+      </button>
+    </transition>
 
-  <HistogramPanel v-show="showHistogramPanel" style="position: absolute; bottom: 10px; left: 170px; " class="get-click"/>
+    <HistogramPanel
+      v-show="showHistogramPanel"
+      style="position: absolute; bottom: 10px; left: 170px"
+      class="get-click"
+    />
 
-  <FocuserPanel v-show="showFocuserPanel" style="position: absolute; bottom: 10px; left: 170px; " class="get-click"/>
-  
-  <!-- <button v-show="isCaptureMode" @click="hideCaptureUI" class="get-click btn-UISwitch"> <v-icon> mdi-flip-to-back </v-icon> </button> -->
-  <button v-show="isCaptureMode" @click="hideCaptureUI" class="get-click btn-UISwitch">
-    <div style="display: flex; justify-content: center; align-items: center;">
-      <img src="@/assets/images/svg/ui/UI_Hide.svg" height="20px" style="min-height: 20px"></img>
-    </div>
-  </button>
+    <FocuserPanel
+      v-show="showFocuserPanel"
+      style="position: absolute; bottom: 10px; left: 170px"
+      class="get-click"
+    />
 
-  <!-- <button v-show="isRedBoxMode" @click="showCaptureUI" class="get-click btn-ShowUISwitch"> <v-icon> mdi-flip-to-front </v-icon> </button> -->
-  <button v-show="isRedBoxMode" @click="showCaptureUI" class="get-click btn-ShowUISwitch">
-    <div style="display: flex; justify-content: center; align-items: center;">
-        <img src="@/assets/images/svg/ui/UI_Show.svg" height="20px" style="min-height: 20px">
-    </div>
-  </button>
+    <!-- <button v-show="isCaptureMode" @click="hideCaptureUI" class="get-click btn-UISwitch"> <v-icon> mdi-flip-to-back </v-icon> </button> -->
+    <button
+      v-show="isCaptureMode"
+      @click="hideCaptureUI"
+      class="get-click btn-UISwitch"
+    >
+      <div style="display: flex; justify-content: center; align-items: center">
+        <img
+          src="@/assets/images/svg/ui/UI_Hide.svg"
+          height="20px"
+          style="min-height: 20px"
+        />
+      </div>
+    </button>
 
-  <CapturePanel v-show="isCaptureMode" />
+    <!-- <button v-show="isRedBoxMode" @click="showCaptureUI" class="get-click btn-ShowUISwitch"> <v-icon> mdi-flip-to-front </v-icon> </button> -->
+    <button
+      v-show="isRedBoxMode"
+      @click="showCaptureUI"
+      class="get-click btn-ShowUISwitch"
+    >
+      <div style="display: flex; justify-content: center; align-items: center">
+        <img
+          src="@/assets/images/svg/ui/UI_Show.svg"
+          height="20px"
+          style="min-height: 20px"
+        />
+      </div>
+    </button>
 
-  <ImageManagerPanel v-show="ShowImageManagerPanel" />
+    <CapturePanel v-show="isCaptureMode" />
 
-  <SchedulePanel v-show="ShowSchedulePanel" class="get-click" style="position: absolute;"/>
-  <ScheduleKeyBoard v-show="ShowSchedulePanel" />
-  <ScheduleList v-show="ShowSchedulePanel" class="get-click" style="position: absolute;"/>
+    <ImageManagerPanel v-show="ShowImageManagerPanel" />
 
-  
-
-</div>
-
+    <SchedulePanel
+      v-show="ShowSchedulePanel"
+      class="get-click"
+      style="position: absolute"
+    />
+    <ScheduleKeyBoard v-show="ShowSchedulePanel" />
+    <ScheduleList
+      v-show="ShowSchedulePanel"
+      class="get-click"
+      style="position: absolute"
+    />
+  </div>
 </template>
 
 <script>
-import Toolbar from '@/components/toolbar.vue'
-import BottomBar from '@/components/bottom-bar.vue'
-import SelectedObjectInfo from '@/components/selected-object-info.vue'
-import ProgressBars from '@/components/progress-bars'
+import Toolbar from "@/components/toolbar.vue";
+import BottomBar from "@/components/bottom-bar.vue";
+import SelectedObjectInfo from "@/components/selected-object-info.vue";
+import ProgressBars from "@/components/progress-bars";
 
-import DataCreditsDialog from '@/components/data-credits-dialog.vue'
-import ViewSettingsDialog from '@/components/view-settings-dialog.vue'
-import PlanetsVisibility from '@/components/planets-visibility.vue'
-import LocationDialog from '@/components/location-dialog.vue'
-import ObservingPanel from '@/components/observing-panel.vue'
+import DataCreditsDialog from "@/components/data-credits-dialog.vue";
+import ViewSettingsDialog from "@/components/view-settings-dialog.vue";
+import PlanetsVisibility from "@/components/planets-visibility.vue";
+import LocationDialog from "@/components/location-dialog.vue";
+import ObservingPanel from "@/components/observing-panel.vue";
 
-import MountControlPanel from '@/components/MountControlPanel.vue'
-import MountSettingWindow from '@/components/Settings-Dialog-Mount.vue'
-import PoleCameraSettingWindow from '@/components/Settings-Dialog-PoleCamera.vue'
-import MainCameraSettingWindow from '@/components/Settings-Dialog-MainCamera.vue'
-import GuiderSettingWindow from '@/components/Settings-Dialog-Guider.vue'
-import FocuserSettingWindow from '@/components/Settings-Dialog-Focuser.vue'
-import CFWSettingWindow from '@/components/Settings-Dialog-CFW.vue'
+import MountControlPanel from "@/components/MountControlPanel.vue";
+import MountSettingWindow from "@/components/Settings-Dialog-Mount.vue";
+import PoleCameraSettingWindow from "@/components/Settings-Dialog-PoleCamera.vue";
+import MainCameraSettingWindow from "@/components/Settings-Dialog-MainCamera.vue";
+import GuiderSettingWindow from "@/components/Settings-Dialog-Guider.vue";
+import FocuserSettingWindow from "@/components/Settings-Dialog-Focuser.vue";
+import CFWSettingWindow from "@/components/Settings-Dialog-CFW.vue";
 
 import MessageBox from "@/components/MessageBox.vue";
 
 import ExpTimeBtnBar from "@/components/ExpTimeBtnBar.vue";
 import CFWSelectBtnBar from "@/components/CFWSelectBtnBar.vue";
 
-import CircularProgressButton from '@/components/CircularButton.vue';
+import CircularProgressButton from "@/components/CircularButton.vue";
 
-import ChartComponent from '@/components/ChartComponent.vue';
+import ChartComponent from "@/components/ChartComponent.vue";
 
-import HistogramPanel from '@/components/HistogramPanel.vue';
+import HistogramPanel from "@/components/HistogramPanel.vue";
 
-import FocuserPanel from '@/components/FocuserPanel.vue';
+import FocuserPanel from "@/components/FocuserPanel.vue";
 
-import SchedulePanel from '@/components/SchedulePanel.vue';
-import ScheduleList from '@/components/ScheduleList.vue';
+import SchedulePanel from "@/components/SchedulePanel.vue";
+import ScheduleList from "@/components/ScheduleList.vue";
 
-import ScheduleKeyBoard from '@/components/ScheduleKeyBoard.vue';
+import ScheduleKeyBoard from "@/components/ScheduleKeyBoard.vue";
 
-import CapturePanel from '@/components/CapturePanel.vue';
+import CapturePanel from "@/components/CapturePanel.vue";
 
-import ImageManagerPanel from '@/components/ImageManagerPanel.vue';
+import ImageManagerPanel from "@/components/ImageManagerPanel.vue";
 
 export default {
   data: function () {
@@ -185,7 +340,7 @@ export default {
       isSettingWindowShow: false,
       isMessageBoxShow: false,
       isBottomBarShow: true,
-      CurrentMainPage: 'Stel',
+      CurrentMainPage: "Stel",
       isExpTimeBarShow: false,
       isCFWSelectBarShow: false,
       showChartsPanel: false,
@@ -202,8 +357,8 @@ export default {
       isInitRedBox: true,
       mouseX: 0, // 鼠标的X坐标
       mouseY: 0, // 鼠标的Y坐标
-      mouseX_: 0, 
-      mouseY_: 0, 
+      mouseX_: 0,
+      mouseY_: 0,
       BoxSideLength: 500,
       RedBoxWidth: 20,
       RedBoxHeight: 20,
@@ -220,29 +375,27 @@ export default {
 
       ScaleImageWidth: 0,
       ScaleImageHeight: 0,
-      
-
-    }
+    };
   },
   created() {
-    this.$bus.$on('add-driver', this.handleAddDriver);
-    this.$bus.$on('add-device', this.handleAddDevice);
-    this.$bus.$on('showMsgBox', this.showMessageBox);
-    this.$bus.$on('MainCameraSize', this.resizeRedBox);
-    this.$bus.$on('RedBoxSizeChange', this.RedBoxSizeChange);
-    this.$bus.$on('time-selected', this.handleExpTimeSelected);
+    this.$bus.$on("add-driver", this.handleAddDriver);
+    this.$bus.$on("add-device", this.handleAddDevice);
+    this.$bus.$on("showMsgBox", this.showMessageBox);
+    this.$bus.$on("MainCameraSize", this.resizeRedBox);
+    this.$bus.$on("RedBoxSizeChange", this.RedBoxSizeChange);
+    this.$bus.$on("time-selected", this.handleExpTimeSelected);
     // this.$bus.$on('cfw-selected', this.handleCFWSelected);
-    this.$bus.$on('toggleSchedulePanel', this.toggleSchedulePanel);
-    this.$bus.$on('MountPanelClose', this.toggleFloatingBox);
-    this.$bus.$on('toggleHistogramPanel', this.toggleHistogramPanel);
-    this.$bus.$on('toggleFocuserPanel', this.toggleFocuserPanel);
-    this.$bus.$on('ImageManagerPanelClose', this.toggleImageManagerPanel);
-    
+    this.$bus.$on("toggleSchedulePanel", this.toggleSchedulePanel);
+    this.$bus.$on("MountPanelClose", this.toggleFloatingBox);
+    this.$bus.$on("toggleHistogramPanel", this.toggleHistogramPanel);
+    this.$bus.$on("toggleFocuserPanel", this.toggleFocuserPanel);
+    this.$bus.$on("ImageManagerPanelClose", this.toggleImageManagerPanel);
+
     // this.$bus.$on('RedBoxClick', this.handleTouchOrMouseDown);
-    this.$bus.$on('RedBox_XY', this.RedBox_XY);
-    this.$bus.$on('RedBoxOffset', this.setRedBoxOffset);
-    this.$bus.$on('RedBoxScale', this.SetRedBoxScale);
-    this.$bus.$on('ScaleImageSize', this.setScaleImageSize);
+    this.$bus.$on("RedBox_XY", this.RedBox_XY);
+    this.$bus.$on("RedBoxOffset", this.setRedBoxOffset);
+    this.$bus.$on("RedBoxScale", this.SetRedBoxScale);
+    this.$bus.$on("ScaleImageSize", this.setScaleImageSize);
   },
   mounted() {
     this.resizeRedBox(1920, 1080);
@@ -253,31 +406,28 @@ export default {
     },
     toggleChartsPanel() {
       this.showChartsPanel = !this.showChartsPanel;
-      if(this.showFocuserPanel) {
+      if (this.showFocuserPanel) {
         this.showFocuserPanel = !this.showFocuserPanel;
-      } 
-      else if(this.showHistogramPanel) {
+      } else if (this.showHistogramPanel) {
         this.showHistogramPanel = !this.showHistogramPanel;
       }
     },
     toggleHistogramPanel() {
       this.showHistogramPanel = !this.showHistogramPanel;
-      if(this.showFocuserPanel) {
+      if (this.showFocuserPanel) {
         this.showFocuserPanel = !this.showFocuserPanel;
-      } 
-      else if(this.showChartsPanel) {
+      } else if (this.showChartsPanel) {
         this.showChartsPanel = !this.showChartsPanel;
       }
     },
     toggleFocuserPanel() {
       this.showFocuserPanel = !this.showFocuserPanel;
-      if(this.showHistogramPanel) {
+      if (this.showHistogramPanel) {
         this.showHistogramPanel = !this.showHistogramPanel;
-      }
-      else if(this.showChartsPanel) {
+      } else if (this.showChartsPanel) {
         this.showChartsPanel = !this.showChartsPanel;
       }
-      this.$bus.$emit('SwitchImageToShow', !this.showFocuserPanel);
+      this.$bus.$emit("SwitchImageToShow", !this.showFocuserPanel);
     },
     toggleSchedulePanel() {
       this.ShowSchedulePanel = !this.ShowSchedulePanel;
@@ -285,15 +435,15 @@ export default {
 
     toggleImageManagerPanel() {
       this.ShowImageManagerPanel = !this.ShowImageManagerPanel;
-      if(this.ShowImageManagerPanel){
-        this.$bus.$emit('calculateTotalPage');
-        this.$bus.$emit('AppSendMessage', 'Vue_Command', 'ShowAllImageFolder');
-        this.$bus.$emit('AppSendMessage', 'Vue_Command', 'USBCheck');
+      if (this.ShowImageManagerPanel) {
+        this.$bus.$emit("calculateTotalPage");
+        this.$bus.$emit("AppSendMessage", "Vue_Command", "ShowAllImageFolder");
+        this.$bus.$emit("AppSendMessage", "Vue_Command", "USBCheck");
       }
     },
 
     showCaptureUI() {
-      document.removeEventListener('click', this.handleTouchOrMouseDown);
+      document.removeEventListener("click", this.handleTouchOrMouseDown);
       this.isRedBoxMode = false;
       this.showToolbar = true;
       this.isCaptureMode = true;
@@ -302,7 +452,7 @@ export default {
       this.showMountSwitch = true;
     },
     hideCaptureUI() {
-      document.addEventListener('click', this.handleTouchOrMouseDown);
+      document.addEventListener("click", this.handleTouchOrMouseDown);
       this.isRedBoxMode = true;
       this.showToolbar = false;
       this.isCaptureMode = false;
@@ -318,7 +468,7 @@ export default {
     },
 
     RedBox_XY(event) {
-      if (this.isRedBoxMode){
+      if (this.isRedBoxMode) {
         // this.mouseX = X;
         // this.mouseY = Y;
         this.handleTouchOrMouseDown(event);
@@ -329,8 +479,8 @@ export default {
       this.RedBoxOffset_X = X;
       this.RedBoxOffset_Y = Y;
       // console.log('RedBoxOffset:', this.RedBoxOffset_Y);
-      this.mouseX =  this.mouseX_ - this.RedBoxOffset_X;
-      this.mouseY =  this.mouseY_ - this.RedBoxOffset_Y;
+      this.mouseX = this.mouseX_ - this.RedBoxOffset_X;
+      this.mouseY = this.mouseY_ - this.RedBoxOffset_Y;
     },
 
     SetRedBoxScale(value) {
@@ -343,11 +493,15 @@ export default {
       this.ScaleImageHeight = height;
       // console.log('ScaleImageSize: ' + this.ScaleImageWidth + ', ' + this.ScaleImageHeight);
     },
-    
+
     handleTouchOrMouseDown(event) {
       // 获取触摸或鼠标位置
-      const clientX = event.type.startsWith('touch') ? event.touches[0].clientX : event.clientX;
-      const clientY = event.type.startsWith('touch') ? event.touches[0].clientY : event.clientY;
+      const clientX = event.type.startsWith("touch")
+        ? event.touches[0].clientX
+        : event.clientX;
+      const clientY = event.type.startsWith("touch")
+        ? event.touches[0].clientY
+        : event.clientY;
 
       // 更新位置
       this.mouseX = Math.floor(clientX);
@@ -355,92 +509,128 @@ export default {
       this.mouseY = Math.floor(clientY);
       this.mouseY_ = Math.floor(clientY);
 
-      console.log('handleTouchOrMouseDown: ', this.mouseX, ',', this.mouseY);
+      console.log("handleTouchOrMouseDown: ", this.mouseX, ",", this.mouseY);
 
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
 
-      this.$bus.$emit('AppSendMessage', 'Vue_Command', 'RedBox:'+ Math.floor((this.mouseX + this.RedBoxOffset_X) / this.ScaleImageWidth * windowWidth) + ":" + Math.floor((this.mouseY + this.RedBoxOffset_Y) / this.ScaleImageHeight * windowHeight) + ":" + windowWidth + ":" + windowHeight);
+      this.$bus.$emit(
+        "AppSendMessage",
+        "Vue_Command",
+        "RedBox:" +
+          Math.floor(
+            ((this.mouseX + this.RedBoxOffset_X) / this.ScaleImageWidth) *
+              windowWidth
+          ) +
+          ":" +
+          Math.floor(
+            ((this.mouseY + this.RedBoxOffset_Y) / this.ScaleImageHeight) *
+              windowHeight
+          ) +
+          ":" +
+          windowWidth +
+          ":" +
+          windowHeight
+      );
     },
 
     resizeRedBox(CameraWidth, CameraHeight) {
       const windowWidth = window.innerWidth;
       const windowHeight = window.innerHeight;
 
-      this.RedBoxWidth = this.BoxSideLength * windowWidth / CameraWidth;
-      this.RedBoxHeight = this.BoxSideLength * windowHeight / CameraHeight;
+      this.RedBoxWidth = (this.BoxSideLength * windowWidth) / CameraWidth;
+      this.RedBoxHeight = (this.BoxSideLength * windowHeight) / CameraHeight;
 
-      this.ImageProportion = this.RedBoxWidth/this.RedBoxHeight;
-      this.$bus.$emit('ImageProportion', this.ImageProportion);
+      this.ImageProportion = this.RedBoxWidth / this.RedBoxHeight;
+      this.$bus.$emit("ImageProportion", this.ImageProportion);
       this.RedBoxHeight = this.RedBoxHeight * this.ImageProportion;
 
       this.RedBoxWidth_ = this.RedBoxWidth;
       this.RedBoxHeight_ = this.RedBoxHeight;
 
-      console.log('RedBoxSize:', this.RedBoxWidth, ', ' , this.RedBoxHeight);
+      console.log("RedBoxSize:", this.RedBoxWidth, ", ", this.RedBoxHeight);
 
-      if(this.isInitRedBox === true)
-      {
+      if (this.isInitRedBox === true) {
         // 将小红框置于界面中央
         this.mouseX = (windowWidth - this.RedBoxWidth) / 2; // 100是小红框的宽度
         this.mouseY = (windowHeight - this.RedBoxHeight) / 2; // 100是小红框的高度
         this.isInitRedBox = false;
       }
 
-      this.$bus.$emit('AppSendMessage', 'Vue_Command', 'RedBox:'+ Math.floor((this.mouseX + this.RedBoxOffset_X) / this.ScaleImageWidth * windowWidth) + ":" + Math.floor((this.mouseY + this.RedBoxOffset_Y) / this.ScaleImageHeight * windowHeight) + ":" + windowWidth + ":" + windowHeight);  //TODO: BoxSize
+      this.$bus.$emit(
+        "AppSendMessage",
+        "Vue_Command",
+        "RedBox:" +
+          Math.floor(
+            ((this.mouseX + this.RedBoxOffset_X) / this.ScaleImageWidth) *
+              windowWidth
+          ) +
+          ":" +
+          Math.floor(
+            ((this.mouseY + this.RedBoxOffset_Y) / this.ScaleImageHeight) *
+              windowHeight
+          ) +
+          ":" +
+          windowWidth +
+          ":" +
+          windowHeight
+      ); //TODO: BoxSize
     },
 
     RedBoxSizeChange(length) {
       this.BoxSideLength = length;
-      console.log('RedBoxSizeChange: ', this.BoxSideLength);
-      this.$bus.$emit('AppSendMessage', 'Vue_Command', 'RedBoxSizeChange:'+ this.BoxSideLength);
+      console.log("RedBoxSizeChange: ", this.BoxSideLength);
+      this.$bus.$emit(
+        "AppSendMessage",
+        "Vue_Command",
+        "RedBoxSizeChange:" + this.BoxSideLength
+      );
     },
 
     handleAddDriver(driver) {
-      if (driver.type === 'Mount') {
+      if (driver.type === "Mount") {
         this.$refs.mountDialog.AddDrivers(driver);
-      } else if (driver.type === 'Focuser') {
+      } else if (driver.type === "Focuser") {
         this.$refs.focuserDialog.AddDrivers(driver);
-      } else if (driver.type === 'PoleCamera') {
+      } else if (driver.type === "PoleCamera") {
         this.$refs.polecameraDialog.AddDrivers(driver);
-      } else if (driver.type === 'MainCamera') {
+      } else if (driver.type === "MainCamera") {
         this.$refs.maincameraDialog.AddDrivers(driver);
-      } else if (driver.type === 'Guider') {
+      } else if (driver.type === "Guider") {
         this.$refs.guiderDialog.AddDrivers(driver);
-      } else if (driver.type === 'CFW') {
+      } else if (driver.type === "CFW") {
         this.$refs.cfwDialog.AddDrivers(driver);
       }
     },
     handleAddDevice(device) {
-      if (device.type === 'Mount') {
+      if (device.type === "Mount") {
         this.$refs.mountDialog.AddDevices(device);
-      } else if (device.type === 'Focuser') {
+      } else if (device.type === "Focuser") {
         this.$refs.focuserDialog.AddDevices(device);
-      } else if (device.type === 'PoleCamera') {
+      } else if (device.type === "PoleCamera") {
         this.$refs.polecameraDialog.AddDevices(device);
-      } else if (device.type === 'MainCamera') {
+      } else if (device.type === "MainCamera") {
         this.$refs.maincameraDialog.AddDevices(device);
-      } else if (device.type === 'Guider') {
+      } else if (device.type === "Guider") {
         this.$refs.guiderDialog.AddDevices(device);
-      } else if (device.type === 'CFW') {
+      } else if (device.type === "CFW") {
         this.$refs.cfwDialog.AddDevices(device);
       }
     },
 
     // 消息框
-    showMessageBox(msg,type) {
+    showMessageBox(msg, type) {
       console.log("QHYCCD | show Message Box.");
       this.isMessageBoxShow = true;
       this.$nextTick(() => {
-        this.$refs.messageBox.show(msg,type);
+        this.$refs.messageBox.show(msg, type);
       });
     },
     // 消息框
 
     SwitchMainPage() {
-      if(this.CurrentMainPage === 'Stel')
-      {
-        this.CurrentMainPage = 'MainCamera';
+      if (this.CurrentMainPage === "Stel") {
+        this.CurrentMainPage = "MainCamera";
         this.isBottomBarShow = false;
         this.isExpTimeBarShow = true;
 
@@ -453,11 +643,9 @@ export default {
         this.showChartsPanel = false;
         this.showRedBox = true;
 
-        this.$bus.$emit('HideTargetSearch');
-      }
-      else if (this.CurrentMainPage === 'MainCamera')
-      {
-        this.CurrentMainPage = 'GuiderCamera';
+        this.$bus.$emit("HideTargetSearch");
+      } else if (this.CurrentMainPage === "MainCamera") {
+        this.CurrentMainPage = "GuiderCamera";
         this.isBottomBarShow = false;
         this.isExpTimeBarShow = false;
         this.isCFWSelectBarShow = false;
@@ -472,10 +660,8 @@ export default {
         this.showHistogramPanel = false;
         this.showFocuserPanel = false;
         this.showRedBox = false;
-      }
-      else if (this.CurrentMainPage === 'GuiderCamera')
-      {
-        this.CurrentMainPage = 'Stel';
+      } else if (this.CurrentMainPage === "GuiderCamera") {
+        this.CurrentMainPage = "Stel";
         this.isBottomBarShow = true;
         this.isExpTimeBarShow = false;
         this.isCFWSelectBarShow = false;
@@ -491,10 +677,10 @@ export default {
         this.showFocuserPanel = false;
         this.showRedBox = false;
 
-        this.$bus.$emit('ShowTargetSearch');
+        this.$bus.$emit("ShowTargetSearch");
       }
 
-      this.$bus.$emit('Switch-MainPage');
+      this.$bus.$emit("Switch-MainPage");
     },
 
     // Switch_ExpTime_CFW() {
@@ -510,7 +696,7 @@ export default {
     // },
 
     handleExpTimeSelected(time) {
-      console.log('QHYCCD | ExpTimeSelected: ', time);
+      console.log("QHYCCD | ExpTimeSelected: ", time);
       // 根据需要处理选择的时间
       const match = time.match(/(\d+)([a-zA-Z]+)/);
 
@@ -520,18 +706,18 @@ export default {
 
         let convertedTime = numericPart; // 默认情况下，将数字部分保持不变
 
-        if (unitPart === 's') {
+        if (unitPart === "s") {
           convertedTime *= 1000; // 如果单位是秒(s)，则将数字乘以1000
         }
 
-        console.log('Numeric part:', numericPart);
-        console.log('Unit part:', unitPart);
-        console.log('Converted time:', convertedTime);
+        console.log("Numeric part:", numericPart);
+        console.log("Unit part:", unitPart);
+        console.log("Converted time:", convertedTime);
 
         // this.$refs.CaptureBtn.SetDuration(convertedTime);
-        this.$bus.$emit('SetExpTime',convertedTime);
+        this.$bus.$emit("SetExpTime", convertedTime);
       } else {
-        console.log('No numeric part found in time:', time);
+        console.log("No numeric part found in time:", time);
       }
     },
 
@@ -539,48 +725,47 @@ export default {
     //   console.log('QHYCCD | CFWSelected: ', cfw);
     //   // 根据需要处理选择的时间
     // },
-
   },
   computed: {
     pluginsGuiComponents: function () {
-      let res = []
+      let res = [];
       for (const i in this.$stellariumWebPlugins()) {
-        const plugin = this.$stellariumWebPlugins()[i]
+        const plugin = this.$stellariumWebPlugins()[i];
         if (plugin.guiComponents) {
-          res = res.concat(plugin.guiComponents)
+          res = res.concat(plugin.guiComponents);
         }
       }
-      return res
+      return res;
     },
     dialogs: function () {
       let res = [
-        'data-credits-dialog',
-        'view-settings-dialog',
-        'planets-visibility',
-        'location-dialog'
-      ]
+        "data-credits-dialog",
+        "view-settings-dialog",
+        "planets-visibility",
+        "location-dialog",
+      ];
       for (const i in this.$stellariumWebPlugins()) {
-        const plugin = this.$stellariumWebPlugins()[i]
+        const plugin = this.$stellariumWebPlugins()[i];
         if (plugin.dialogs) {
-          res = res.concat(plugin.dialogs.map(d => d.name))
+          res = res.concat(plugin.dialogs.map((d) => d.name));
         }
       }
-      return res
-    }
+      return res;
+    },
   },
-  components: { 
-    Toolbar, 
-    BottomBar, 
-    DataCreditsDialog, 
-    ViewSettingsDialog, 
-    PlanetsVisibility, 
-    SelectedObjectInfo, 
-    LocationDialog, 
-    ProgressBars, 
-    ObservingPanel, 
-    MountControlPanel, 
-    MountSettingWindow, 
-    PoleCameraSettingWindow, 
+  components: {
+    Toolbar,
+    BottomBar,
+    DataCreditsDialog,
+    ViewSettingsDialog,
+    PlanetsVisibility,
+    SelectedObjectInfo,
+    LocationDialog,
+    ProgressBars,
+    ObservingPanel,
+    MountControlPanel,
+    MountSettingWindow,
+    PoleCameraSettingWindow,
     MainCameraSettingWindow,
     GuiderSettingWindow,
     FocuserSettingWindow,
@@ -597,18 +782,18 @@ export default {
     ScheduleKeyBoard,
     CapturePanel,
     ImageManagerPanel,
-  }
-}
+  },
+};
 </script>
 
 <style>
 .btn-MountPanelSwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   top: 50px;
   right: 20px;
-  
+
   user-select: none;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
@@ -617,12 +802,26 @@ export default {
 }
 
 .btn-ImageManagerPanelSwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   top: 100px;
   right: 20px;
-  
+
+  user-select: none;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+}
+
+.btn-ImageManagerPanelSwitchL {
+  position: absolute;
+  width: 35px;
+  height: 35px;
+  top: 100px;
+  left: 20px;
+
   user-select: none;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
@@ -631,26 +830,28 @@ export default {
 }
 
 .btn-ChartsSwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   bottom: 20px;
   right: 90px;
-  
+
   user-select: none;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 50%; 
+  border-radius: 10px;
+  border: 1px solid rgba(255, 255, 255, 0.8);
+  box-sizing: border-box;
   /* border: 1px solid rgba(255, 255, 255, 0.8); */
 }
 
 .btn-UISwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   top: 50px;
   left: 20px;
-  
+
   user-select: none;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
@@ -659,12 +860,12 @@ export default {
 }
 
 .btn-MainPageSwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   bottom: 20px;
   right: 20px;
-  
+
   user-select: none;
   backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
@@ -680,19 +881,18 @@ export default {
 }
 
 .btn-ShowUISwitch {
-  position:absolute;
+  position: absolute;
   width: 35px;
   height: 35px;
   top: 50px;
   left: 20px;
-  
+
   user-select: none;
-  backdrop-filter: blur(5px);  
+  backdrop-filter: blur(5px);
   background-color: rgba(0, 0, 0, 0.1);
-  border-radius: 50%;  
+  border-radius: 50%;
   /* border: 1px solid rgba(255, 255, 255, 0.8); */
 }
-
 
 .btn-ImageManagerPanelSwitch:active,
 .btn-MountPanelSwitch:active,
@@ -808,4 +1008,29 @@ export default {
   animation: hideRightBtnAnimation 0.15s forwards;
 }
 
+@keyframes showLeftBtnAnimation {
+  from {
+    left: -50px;
+  }
+  to {
+    left: 20px;
+  }
+}
+
+@keyframes hideLeftBtnAnimation {
+  from {
+    left: 20px;
+  }
+  to {
+    left: -50px;
+  }
+}
+
+.LeftBtn-enter-active {
+  animation: showLeftBtnAnimation 0.15s forwards;
+}
+
+.LeftBtn-leave-active {
+  animation: hideLeftBtnAnimation 0.15s forwards;
+}
 </style>

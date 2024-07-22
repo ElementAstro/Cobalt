@@ -26,3 +26,5 @@ stellarium-web.includes
 stellarium-web.creator.user
 stellarium-web.cflags
 stellarium-web.cxxflags
+
+src-out/

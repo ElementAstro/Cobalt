@@ -1,26 +1,19 @@
-// Stellarium Web - Copyright (c) 2022 - Stellarium Labs SRL // // This program
-is licensed under the terms of the GNU AGPL v3, or // alternatively under a
-commercial licence. // // The terms of the AGPL v3 license can be found in the
-main directory of this // repository.
-
 <template>
   <v-dialog max-width="600" v-model="$store.state.showPlanetsVisibilityDialog">
-    <v-card
-      v-if="$store.state.showPlanetsVisibilityDialog"
-      transparent
-      class="secondary white--text"
-    >
-      <v-card-title
-        ><div class="text-h5">{{ $t("Planets Visibility") }}</div></v-card-title
-      >
-      <v-card-text>{{
-        $t("Night from {0} to {1}", [
-          startDate.format("MMMM Do"),
-          endDate.format("MMMM Do"),
-        ])
-      }}</v-card-text>
+    <v-card v-if="$store.state.showPlanetsVisibilityDialog" class="dark-card">
+      <v-card-title>
+        <div class="text-h5 white--text">{{ $t("Planets Visibility") }}</div>
+      </v-card-title>
+      <v-card-text class="white--text">
+        {{
+          $t("Night from {0} to {1}", [
+            startDate.format("MMMM Do"),
+            endDate.format("MMMM Do"),
+          ])
+        }}
+      </v-card-text>
       <v-card-text>
-        <div>
+        <div class="white--text">
           <v-row no-gutters>
             <v-col cols="1" offset="2"
               ><span>{{ $t("Rise") }}</span></v-col
@@ -55,8 +48,8 @@ main directory of this // repository.
         </div>
       </v-card-text>
       <v-card-actions>
-        <v-spacer></v-spacer
-        ><v-btn
+        <v-spacer></v-spacer>
+        <v-btn
           class="blue--text darken-1"
           text
           @click.native="$store.state.showPlanetsVisibilityDialog = false"
@@ -72,7 +65,7 @@ import Moment from "moment";
 import swh from "@/assets/sw_helpers.js";
 
 export default {
-  data: function () {
+  data() {
     return {
       objs: [
         this.$stel.getObj("NAME Sun"),
@@ -86,17 +79,17 @@ export default {
     };
   },
   methods: {
-    formatTime: function (jdm) {
+    formatTime(jdm) {
       const d = new Date();
       d.setMJD(jdm);
       const utc = Moment.utc(d);
       utc.local();
       return utc.format("HH:mm");
     },
-    cleanName: function (obj) {
+    cleanName(obj) {
       return swh.cleanupOneSkySourceName(obj.designations()[0]);
     },
-    planetBackgroundStr: function (obj) {
+    planetBackgroundStr(obj) {
       const d = new Date();
       d.setMJD(obj.computeVisibility()[0].rise);
       const rise = Moment.utc(d);
@@ -105,37 +98,28 @@ export default {
       const set = Moment.utc(d);
       set.local();
 
-      var hourToPercent = function (h) {
-        return h >= 12
+      const hourToPercent = (h) =>
+        h >= 12
           ? Math.round(((h - 12) / 24) * 100)
           : Math.round(((h + 12) / 24) * 100);
-      };
 
       const riseP = hourToPercent(rise.hours());
       const setP = hourToPercent(set.hours());
       if (setP > riseP) {
-        return (
-          "<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); left: " +
-          riseP +
-          "%; min-width: " +
-          (setP - riseP) +
-          "%; top: 7px; height: 8px;'></div>"
-        );
+        return `<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); left: ${riseP}%; min-width: ${
+          setP - riseP
+        }%; top: 7px; height: 8px;'></div>`;
       } else {
-        let ret =
-          "<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); left: 0%; min-width: " +
-          setP +
-          "%; top: 7px; height: 8px;'></div>";
-        ret +=
-          "<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); right: 0%; min-width: " +
-          (100 - riseP) +
-          "%; top: 7px; height: 8px;'></div>";
+        let ret = `<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); left: 0%; min-width: ${setP}%; top: 7px; height: 8px;'></div>`;
+        ret += `<div style='z-index: 100; position: absolute; background-color: rgb(200, 200, 50); right: 0%; min-width: ${
+          100 - riseP
+        }%; top: 7px; height: 8px;'></div>`;
         return ret;
       }
     },
   },
   computed: {
-    sunBackgroundStr: function () {
+    sunBackgroundStr() {
       var sun = this.$stel.getObj("NAME Sun");
       const brightness = [];
       const d = new Moment(this.startDate);
@@ -157,21 +141,14 @@ export default {
       }
       obs.destroy();
 
-      var txt = "position: relative; background: linear-gradient(to right, ";
+      let txt = "position: relative; background: linear-gradient(to right, ";
       for (let i = 0; i < 25; i++) {
         let bi = (brightness[i] + 0.1) * 5;
         bi = bi > 1 ? 1 : bi;
         bi = bi < 0 ? 0 : bi;
-        txt +=
-          "rgb(" +
-          Math.round(53 * bi) +
-          ", " +
-          Math.round(173 * bi) +
-          ", " +
-          Math.round(211 * bi) +
-          ") " +
-          Math.round((i / 24) * 100) +
-          "% ";
+        txt += `rgb(${Math.round(53 * bi)}, ${Math.round(
+          173 * bi
+        )}, ${Math.round(211 * bi)}) ${Math.round((i / 24) * 100)}% `;
         if (i !== 24) {
           txt += ",";
         }
@@ -179,7 +156,7 @@ export default {
       txt += "); min-width: 100%; height: 100%";
       return txt;
     },
-    startDate: function () {
+    startDate() {
       var sun = this.$stel.getObj("NAME Sun");
       let u = this.$store.state.stel.observer.utc;
       if (u < sun.rise) {
@@ -195,7 +172,7 @@ export default {
       d.seconds(0);
       return d;
     },
-    endDate: function () {
+    endDate() {
       const d = new Moment(this.startDate);
       d.add(1, "d");
       return d;
@@ -204,8 +181,58 @@ export default {
 };
 </script>
 
-<style>
-.input-group {
-  margin: 0px;
+<style scoped>
+@import url("https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap");
+
+body {
+  font-family: "Roboto", sans-serif;
+}
+
+.dark-card {
+  background-color: #1e1e1e !important;
+  color: #e0e0e0 !important;
+}
+
+.text-h5 {
+  color: #e0e0e0 !important;
+}
+
+.v-card-title {
+  border-bottom: 1px solid #333;
+}
+
+.v-card-text {
+  color: #e0e0e0;
+}
+
+.v-btn {
+  color: #007bff !important;
+}
+
+.modal {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+.close-button {
+  background: transparent;
+  border: none;
+  color: #e0e0e0;
+  font-size: 24px;
+  cursor: pointer;
+  transition: color 0.3s;
+}
+
+.close-button:hover {
+  color: #ff5c5c;
+}
+
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  opacity: 0;
 }
 </style>

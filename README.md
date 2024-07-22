@@ -1,37 +1,27 @@
-# Stellarium Web frontend
+作为 npm 包，项目根目录的 transform.js 会被 gogocode-cli 调用
 
-This directory contains the Graphical User Interface for using
-Stellarium Web Engine in a web page.
+fileInfo 会包括 source 和 path 作为单个代码文件的内容和路径
+api 目前只有 gogocode 作为转换库注入
+options 将透传命令行的 options
 
-This is a Vuejs project, which can generate a fully static webpage with webpack.
+```javascript
 
-Official page: [stellarium-web.org](https://stellarium-web.org)
+module.exports = function(fileInfo, api, options) {
+  const sourceCode = fileInfo.source;
+  const $ = api.gogocode;
+  return $(sourceCode)
+    .replace('const a = $_$', 'const a = 2')
+    .generate();
+};
 
-## Build setup using Docker
-Make sure docker is installed, then:
-
-``` bash
-# generate the docker image and build engine WASM/js files
-make setup
-
-# and build and run the web GUI (go to http://localhost:8080 on your machine)
-make dev
-
-# Optionally, compile a production version of the site with minification
-make build
-
-# and finally to host it on a test server (http://localhost:8000)
-make start
 ```
 
-Note that before you build the web GUI the first time, the JS version of
-the engine also needs to be built by running make setup, you can then update
-the engine at any time by running
+命令行调用方式：
 
-``` bash
-make update-engine
+
 ```
 
-For a detailed explanation on how things work, check out the [guide](http://vuejs-templates.github.io/webpack/) and [docs for vue-loader](http://vuejs.github.io/vue-loader).
+gogogcode --src script.js --out script-compiled.js --transform=transform.js
 
 
+```

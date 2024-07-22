@@ -1,26 +1,87 @@
-// Stellarium Web - Copyright (c) 2022 - Stellarium Labs SRL
-//
-// This program is licensed under the terms of the GNU AGPL v3, or
-// alternatively under a commercial licence.
-//
-// The terms of the AGPL v3 license can be found in the main directory of this
-// repository.
+// Stellarium Web - Copyright (c) 2022 - Stellarium Labs SRL // // This program
+is licensed under the terms of the GNU AGPL v3, or // alternatively under a
+commercial licence. // // The terms of the AGPL v3 license can be found in the
+main directory of this // repository.
 
 <template>
   <div id="toolbar-image">
     <v-toolbar height="40px" elevation="0" class="transparent" dense>
-      <v-app-bar-nav-icon @click="toggleNavigationDrawer"></v-app-bar-nav-icon>
-      <img class="tbtitle hidden-xs-only" id="stellarium-web-toolbar-logo" src="@/assets/images/logo.svg" width="33" height="33" alt="Stellarium Web Logo"/>
-      <span class="tbtitle hidden-xs-only">Q U A R C S</span>
+      <!--<v-app-bar-nav-icon @click="toggleNavigationDrawer"></v-app-bar-nav-icon>-->
+
+      <img
+        class="tbtitle hidden-xs-only"
+        id="stellarium-web-toolbar-logo"
+        src="@/assets/images/logo.svg"
+        width="33"
+        height="33"
+        alt="Stellarium Web Logo"
+      />
+      <span class="tbtitle hidden-xs-only">QUARCS</span>
+      <img
+        class="tbtitle hidden-xs-only"
+        id="stellarium-web-toolbar-logo"
+        src="@/assets/images/atom.png"
+        width="33"
+        height="33"
+        alt="Stellarium Web Logo"
+      />
+      <span class="tbtitle hidden-xs-only">Lithium</span>
       <v-spacer></v-spacer>
-      <target-search v-show="isTargetSearchShow"></target-search>
+      <!---->
+      <target-search v-show="false"></target-search>
       <v-spacer></v-spacer>
-      <div>
-        <div v-if="$store.state.showFPS" class="subheader text-subtitle-2 pr-2" style="user-select: none;">FPS {{ $store.state.stel ? $store.state.stel.fps.toFixed(1) : '?' }}</div>
-        <div class="subheader text-subtitle-2" style="user-select: none;">FOV {{ fov }}</div>
-      </div>
+
       <!-- <v-btn class="transparent" v-if="!$store.state.showSidePanel" to="/p">{{ $t('Observe') }}<v-icon>mdi-chevron-down</v-icon></v-btn> -->
-      <v-menu v-if="$store.state.showTimeButtons" :close-on-content-click="false" transition="v-slide-y-transition" offset-y top left>
+      <button
+        v-for="(button, index) in buttons"
+        :key="index"
+        class="ScheduleBtn"
+        @click="button.action"
+      >
+        <img
+          :src="require(`@/assets/images/svg/ui/${button.icon}.svg`)"
+          :alt="button.alt"
+          height="25"
+        />
+      </button>
+
+      <!-- 序列 -->
+      <button class="ScheduleBtn" @click="toggleSchedulePanel">
+        <div
+          style="display: flex; justify-content: center; align-items: center"
+        >
+          <img
+            src="@/assets/images/svg/ui/schedule_table.svg"
+            height="25px"
+            style="min-height: 25px"
+          />
+        </div>
+      </button>
+      <!-- WiFi状态指示 -->
+      <div class="wifi-icon">
+        <img :src="wifiIcon" alt="WiFi status" height="30" @click="toggleScanner" />
+      </div>
+
+      <div>
+        <div
+          v-if="$store.state.showFPS"
+          class="subheader text-subtitle-2 pr-2"
+          style="user-select: none"
+        >
+          FPS {{ $store.state.stel ? $store.state.stel.fps.toFixed(1) : "?" }}
+        </div>
+        <div class="subheader text-subtitle-2" style="user-select: none">
+          FOV {{ fov }}
+        </div>
+      </div>
+      <v-menu
+        v-if="$store.state.showTimeButtons"
+        :close-on-content-click="false"
+        transition="v-slide-y-transition"
+        offset-y
+        top
+        left
+      >
         <template v-slot:activator="{ on }">
           <!-- <v-btn large class="tmenubt" color="secondary" v-on="on"> -->
           <button class="TimerPickBtn" v-on="on">
@@ -31,35 +92,19 @@
             </span>
           </button>
         </template>
-        <date-time-picker v-model="pickerDate" :location="$store.state.currentLocation"></date-time-picker>
+        <date-time-picker
+          v-model="pickerDate"
+          :location="$store.state.currentLocation"
+        ></date-time-picker>
       </v-menu>
-
-      <span v-if="isConnect">
-        <div style="display: flex; justify-content: center; align-items: center;">
-          <img src="@/assets/images/svg/ui/wifi.svg" height="30px" style="min-height: 30px"></img>
-        </div>
-      </span>
-      <span v-else>
-        <div style="display: flex; justify-content: center; align-items: center;">
-          <img src="@/assets/images/svg/ui/wifi_off.svg" height="30px" style="min-height: 30px"></img>
-        </div>
-      </span>
-
-      <button class="ScheduleBtn" @click="toggleSchedulePanel" >
-        <div style="display: flex; justify-content: center; align-items: center;">
-          <img src="@/assets/images/svg/ui/schedule_table.svg" height="25px" style="min-height: 25px"></img>
-        </div>
-      </button>
-      
     </v-toolbar>
   </div>
 </template>
 
 <script>
-
-import TargetSearch from '@/components/target-search'
-import DateTimePicker from '@/components/date-time-picker.vue'
-import Moment from 'moment'
+import TargetSearch from "@/components/target-search";
+import DateTimePicker from "@/components/date-time-picker.vue";
+import Moment from "moment";
 
 export default {
   data: function () {
@@ -67,49 +112,86 @@ export default {
       isDrawerShow: false,
       isTargetSearchShow: true,
       isConnect: true,
-    }
+      buttons: [
+        {
+          icon: "sheying",
+          alt: "摄影",
+          action: this.togglePhotographyPanel,
+        },
+        {
+          icon: "mount",
+          alt: "赤道仪",
+          action: this.toggleMountPanel,
+        },
+        {
+          icon: "AutoFocus",
+          alt: "电调",
+          action: this.toggleAutoFocusPanel,
+        },
+        {
+          icon: "Guider",
+          alt: "导星",
+          action: this.toggleGuiderPanel,
+        },
+        {
+          icon: "Solve",
+          alt: "解析",
+          action: this.toggleSolvePanel,
+        },
+        {
+          icon: "Home",
+          alt: "设置",
+          action: this.toggleSettingPanel,
+        },
+      ],
+    };
   },
   created() {
-    this.$bus.$on('ShowTargetSearch', this.ShowTargetSearch);
-    this.$bus.$on('HideTargetSearch', this.HideTargetSearch);
-    this.$bus.$on('ShowNetStatus', this.ShowNetStatus);
+    this.$bus.$on("ShowTargetSearch", this.ShowTargetSearch);
+    this.$bus.$on("HideTargetSearch", this.HideTargetSearch);
+    this.$bus.$on("ShowNetStatus", this.ShowNetStatus);
   },
   computed: {
+    wifiIcon() {
+      return this.isConnect
+        ? require("@/assets/images/svg/ui/wifi.svg")
+        : require("@/assets/images/svg/ui/wifi_off.svg");
+    },
     fov: function () {
-      if (!this.$store.state.stel) return '-'
-      const fov = this.$store.state.stel.fov * 180 / Math.PI
-      return fov.toPrecision(3) + '°'
+      if (!this.$store.state.stel) return "-";
+      const fov = (this.$store.state.stel.fov * 180) / Math.PI;
+      return fov.toPrecision(3) + "°";
     },
 
     time: {
       get: function () {
-        return this.getLocalTime().format('HH:mm:ss')
-      }
+        return this.getLocalTime().format("HH:mm:ss");
+      },
     },
     date: {
       get: function () {
-        return this.getLocalTime().format('YYYY-MM-DD')
-      }
+        return this.getLocalTime().format("YYYY-MM-DD");
+      },
     },
     pickerDate: {
       get: function () {
-        const t = this.getLocalTime()
-        t.milliseconds(0)
-        return t.format()
+        const t = this.getLocalTime();
+        t.milliseconds(0);
+        return t.format();
       },
       set: function (v) {
-        const m = Moment(v)
-        m.local()
-        m.milliseconds(this.getLocalTime().milliseconds())
-        this.$stel.core.observer.utc = m.toDate().getMJD()
-      }
-    }
+        const m = Moment(v);
+        m.local();
+        m.milliseconds(this.getLocalTime().milliseconds());
+        this.$stel.core.observer.utc = m.toDate().getMJD();
+      },
+    },
   },
   methods: {
     toggleNavigationDrawer: function () {
-      this.$store.commit('toggleBool', 'showNavigationDrawer')
-      this.isDrawerShow = !this.isDrawerShow
-      if(this.isDrawerShow) {
+      this.$store.commit("toggleBool", "showNavigationDrawer");
+      this.isDrawerShow = !this.isDrawerShow;
+      if (this.isDrawerShow) {
         this.isTargetSearchShow = false;
       } else {
         this.isTargetSearchShow = true;
@@ -117,11 +199,15 @@ export default {
     },
 
     getLocalTime: function () {
-      var d = new Date()
-      d.setMJD(this.$store.state.stel.observer.utc)
-      const m = Moment(d)
-      m.local()
-      return m
+      var d = new Date();
+      d.setMJD(this.$store.state.stel.observer.utc);
+      const m = Moment(d);
+      m.local();
+      return m;
+    },
+
+    toggleScanner() {
+      this.$store.state.showScanner = !this.$store.state.showScanner;
     },
 
     ShowTargetSearch() {
@@ -133,28 +219,54 @@ export default {
     },
 
     ShowNetStatus(status) {
-      if(status === 'true')
-      {
+      if (status === "true") {
         this.isConnect = true;
-      }
-      else if(status === 'false')
-      {
+      } else if (status === "false") {
+        this.isConnect = false;
+      } else if (status === "abnormal") {
         this.isConnect = false;
       }
-      else if(status === 'abnormal')
-      {
-        this.isConnect = false;
-      }
-      
     },
 
     toggleSchedulePanel() {
-      this.$bus.$emit('toggleSchedulePanel');
+      this.$bus.$emit("toggleSchedulePanel");
     },
-
+    togglePhotographyPanel() {
+      if (!this.$store.state.showDeviceSettingsDialog_MainCamera) {
+        this.$store.state.showDeviceSettingsDialog_MainCamera = true;
+      } else {
+        this.$store.state.showDeviceSettingsDialog_MainCamera = false;
+      }
+    },
+    toggleMountPanel() {
+      if (!this.$store.state.showDeviceSettingsDialog_Mount) {
+        this.$store.state.showDeviceSettingsDialog_Mount = true;
+      } else {
+        this.$store.state.showDeviceSettingsDialog_Mount = false;
+      }
+    },
+    toggleAutoFocusPanel() {
+      if (!this.$store.state.showDeviceSettingsDialog_Focuser) {
+        this.$store.state.showDeviceSettingsDialog_Focuser = true;
+      } else {
+        this.$store.state.showDeviceSettingsDialog_Focuser = false;
+      }
+    },
+    toggleGuiderPanel() {
+      if (!this.$store.state.showDeviceSettingsDialog_Guider) {
+        this.$store.state.showDeviceSettingsDialog_Guider = true;
+      } else {
+        this.$store.state.showDeviceSettingsDialog_Guider = false;
+      }
+    },
+    toggleSolvePanel() {
+    },
+    toggleSettingPanel() {
+      this.$bus.$emit("toggleSettingPanel");
+    },
   },
-  components: { TargetSearch, DateTimePicker }
-}
+  components: { TargetSearch, DateTimePicker },
+};
 </script>
 
 <style>
@@ -173,8 +285,8 @@ export default {
 }
 
 #stellarium-web-toolbar-logo {
-  margin-right: 10px;
-  margin-left: 30px;
+  margin-right: 7px;
+  margin-left: 7px;
 }
 
 @media all and (max-width: 600px) {
@@ -196,32 +308,32 @@ export default {
 }
 
 .TimerPickBtn {
-    padding: 0.2rem 0.6rem;
-    color: white;
-    cursor: pointer;
+  padding: 0.2rem 0.6rem;
+  color: white;
+  cursor: pointer;
 
-    font-size: 14px;
-    text-align: center;
+  font-size: 14px;
+  text-align: center;
 }
 
 .ScheduleBtn {
-    margin: 10px;
-    color: white;
-    cursor: pointer;
+  margin: 10px;
+  color: white;
+  cursor: pointer;
 
-    font-size: x-large;
-    text-align: center;
-    line-height: 35px;
+  font-size: x-large;
+  text-align: center;
+  line-height: 35px;
 
-    width: 35px;
-    height: 35px;
-    
-    user-select: none;
-    backdrop-filter: blur(5px);
-    background-color: rgba(0, 0, 0, 0.0);
-    border-radius: 10px;
+  width: 35px;
+  height: 35px;
 
-    /* border: 1px solid rgba(255, 255, 255, 0.8); */
+  user-select: none;
+  backdrop-filter: blur(5px);
+  background-color: rgba(0, 0, 0, 0);
+  border-radius: 10px;
+
+  /* border: 1px solid rgba(255, 255, 255, 0.8); */
 }
 
 .icon-container .green-icon {
@@ -232,4 +344,28 @@ export default {
   color: rgba(250, 0, 0, 0.5);
 }
 
+.wifi-icon {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding-right: 10px;
+}
+
+.wifi-icon img {
+  min-height: 30px;
+}
+
+.ScheduleBtn {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+  background: none;
+  border: none;
+  cursor: pointer;
+}
+
+.ScheduleBtn img {
+  min-height: 25px;
+}
 </style>

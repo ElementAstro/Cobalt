@@ -1,62 +1,94 @@
 <template>
   <v-dialog
-    max-width="300"
+    max-width="400"
     v-model="$store.state.showDeviceSettingsDialog_Guider"
   >
-    <!-- showDeviceSettingsDialog_Mount -->
     <v-card
       v-if="$store.state.showDeviceSettingsDialog_Guider"
       class="secondary white--text"
     >
-      <v-card-title>
+      <v-card-title class="d-flex justify-space-between align-center">
         <div class="text-h5">{{ $t("Guider Settings") }}</div>
-        <div class="button-container">
-          <v-btn @click="SwitchPage" class="button-container">切换页面</v-btn>
-        </div>
+        <v-btn icon @click="SwitchPage">
+          <v-icon>{{
+            activeMenu === "connection" ? "mdi-cog" : "mdi-link"
+          }}</v-icon>
+        </v-btn>
       </v-card-title>
       <v-card-text>
         <!-- 设备连接的菜单内容 -->
         <div v-if="activeMenu === 'connection'">
-          <v-select
-            label="选择驱动"
-            :items="drivers"
-            item-text="label"
-            item-value="value"
-            v-model="selectedDriver"
-          ></v-select>
-          <v-spacer></v-spacer>
-          <v-btn @click="confirmDriver">确定</v-btn>
-          <!-- <v-btn @click="connectIndiServer">连接indiServer</v-btn> -->
-          <v-select
-            label="选择设备"
-            :items="devices"
-            item-text="label"
-            item-value="value"
-            v-model="selectedDevice"
-          ></v-select>
-          <v-spacer></v-spacer>
-          <v-btn @click="confirmDevice">确定</v-btn>
+          <v-row no-gutters class="mb-3">
+            <v-col cols="8">
+              <v-select
+                label="选择驱动"
+                :items="drivers"
+                item-text="label"
+                item-value="value"
+                v-model="selectedDriver"
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="4" class="d-flex align-center">
+              <v-btn @click="confirmDriver" color="primary" class="ml-2" small
+                >确定</v-btn
+              >
+            </v-col>
+          </v-row>
+          <v-row no-gutters class="mb-3">
+            <v-col cols="8">
+              <v-select
+                label="选择设备"
+                :items="devices"
+                item-text="label"
+                item-value="value"
+                v-model="selectedDevice"
+                dense
+              ></v-select>
+            </v-col>
+            <v-col cols="4" class="d-flex align-center">
+              <v-btn @click="confirmDevice" color="primary" class="ml-2" small
+                >确定</v-btn
+              >
+            </v-col>
+          </v-row>
         </div>
         <!-- 设备配置的菜单内容 -->
         <div v-if="activeMenu === 'configuration'">
-          <!-- 设备配置的内容，您可以根据需要添加表单元素 -->
-          <v-btn @touchend="ClearCalibrationData">
-            Clear Calibration Data
+          <v-btn @touchend="ClearCalibrationData" color="error" class="mb-3">
+            清除校准数据
           </v-btn>
-          <div v-for="(item, index) in configurationItems" :key="index">
-            <v-text-field
-              v-model="item.value"
-              :label="item.label"
-            ></v-text-field>
-            <v-btn @click="confirmConfiguration(item)">确定</v-btn>
-          </div>
+          <v-expansion-panels>
+            <v-expansion-panel
+              v-for="(item, index) in configurationItems"
+              :key="index"
+            >
+              <v-expansion-panel-header>{{
+                item.label
+              }}</v-expansion-panel-header>
+              <v-expansion-panel-content>
+                <v-text-field
+                  v-model="item.value"
+                  :label="item.label"
+                  hide-details
+                  dense
+                ></v-text-field>
+                <v-btn
+                  @click="confirmConfiguration(item)"
+                  color="primary"
+                  class="mt-2"
+                  >确定</v-btn
+                >
+              </v-expansion-panel-content>
+            </v-expansion-panel>
+          </v-expansion-panels>
         </div>
       </v-card-text>
       <v-card-actions>
         <v-spacer></v-spacer>
-        <v-btn class="blue--text darken-1" text @click.native="closeDialog"
-          >Close</v-btn
-        >
+        <v-btn color="blue darken-1" text @click.native="closeDialog">{{
+          $t("Close")
+        }}</v-btn>
       </v-card-actions>
     </v-card>
   </v-dialog>
@@ -64,7 +96,7 @@
 
 <script>
 export default {
-  data: function () {
+  data() {
     return {
       activeMenu: "connection", // 默认显示'设备连接'菜单内容
       // 添加您的数据模型
@@ -119,11 +151,8 @@ export default {
       console.log(`QHYCCD | confirmConfiguration: ${item.value}`);
     },
     SwitchPage() {
-      if (this.activeMenu === "connection") {
-        this.activeMenu = "configuration";
-      } else {
-        this.activeMenu = "connection";
-      }
+      this.activeMenu =
+        this.activeMenu === "connection" ? "configuration" : "connection";
     },
     ClearCalibrationData() {
       this.$bus.$emit("AppSendMessage", "Vue_Command", "ClearCalibrationData");
@@ -133,12 +162,26 @@ export default {
 };
 </script>
 
-<style>
-/* 您的CSS样式 */
+<style scoped>
 .button-container {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  margin-right: 10px; /* 调整按钮容器距离右边的距离 */
+}
+
+.v-card-title .button-container {
+  margin-left: auto;
+}
+
+.v-btn {
+  margin-top: 8px;
+}
+
+.mb-3 {
+  margin-bottom: 16px;
+}
+
+.ml-2 {
+  margin-left: 8px;
 }
 </style>
